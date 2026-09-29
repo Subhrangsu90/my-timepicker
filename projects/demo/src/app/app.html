@@ -1,0 +1,358 @@
+<div class="demo-wrapper">
+  <!-- Top App Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="header-icon">
+        <svg viewBox="0 0 24 24" width="28" height="28">
+          <path
+            fill="currentColor"
+            d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
+          />
+        </svg>
+      </div>
+      <div>
+        <h1 class="header-title">Material 3 Time Picker</h1>
+        <p class="header-subtitle">
+          ngx-mat-timepicker &bull; 100% M3 Specs &bull; Accessible &bull; Signal-based
+        </p>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button class="theme-toggle-btn" (click)="toggleTheme()" aria-label="Toggle theme">
+        @if (isDarkMode()) {
+          <!-- Sun icon -->
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path
+              fill="currentColor"
+              d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41s-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"
+            />
+          </svg>
+          <span>Light Mode</span>
+        } @else {
+          <!-- Moon icon -->
+          <svg viewBox="0 0 24 24" width="20" height="20">
+            <path
+              fill="currentColor"
+              d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-2.98 0-5.4-2.42-5.4-5.4 0-1.81.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"
+            />
+          </svg>
+          <span>Dark Mode</span>
+        }
+      </button>
+    </div>
+  </header>
+
+  <!-- Showcase Hero -->
+  <section class="hero-banner">
+    <div class="hero-text">
+      <h2>Faithful Material 3 Specification Implementation</h2>
+      <p>
+        Experience the precision of Material Design 3 time pickers: 12h/24h dials, drag-to-select,
+        accessible numeric input fallback, and fluid responsiveness.
+      </p>
+    </div>
+    <div class="hero-badges">
+      <span class="badge">M3 Tokens</span>
+      <span class="badge">WCAG 2.1 AAA Ready</span>
+      <span class="badge">Angular 22+ Signals</span>
+      <span class="badge">CDK Overlay</span>
+    </div>
+  </section>
+
+  <!-- Grid of Showcase Scenarios -->
+  <main class="demo-grid">
+    <!-- Card 1: 12-Hour Vertical -->
+    <article class="demo-card">
+      <div class="card-header">
+        <span class="card-badge">Standard Portrait</span>
+        <h3>12-Hour Vertical Dial</h3>
+        <p>Vertical layout with hour, minute, and stacked AM/PM segmented toggle button.</p>
+      </div>
+
+      <div class="card-body">
+        <div class="input-row">
+          <div class="field-container">
+            <input
+              type="text"
+              class="m3-text-field"
+              [ngxMatTimepicker]="picker12"
+              [formControl]="time12hControl"
+              placeholder="e.g. 07:00 AM"
+            />
+            <ngx-mat-timepicker-toggle class="field-toggle" [for]="picker12" />
+          </div>
+          <ngx-mat-timepicker
+            #picker12
+            [format]="12"
+            orientation="vertical"
+            (timeSet)="onTimeSet($event)"
+          />
+        </div>
+
+        <div class="status-box">
+          <span class="status-label">Form Value:</span>
+          <code>{{ time12hControl.value }}</code>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 2: 24-Hour Concentric Rings -->
+    <article class="demo-card">
+      <div class="card-header">
+        <span class="card-badge">24-Hour Layout</span>
+        <h3>24-Hour Dial (Dual Rings)</h3>
+        <p>Outer ring has 1–12, inner ring has 13–24/00 with adaptive pointer length.</p>
+      </div>
+
+      <div class="card-body">
+        <div class="input-row">
+          <div class="field-container">
+            <input
+              type="text"
+              class="m3-text-field"
+              [ngxMatTimepicker]="picker24"
+              [formControl]="time24hControl"
+              placeholder="e.g. 20:00"
+            />
+            <ngx-mat-timepicker-toggle class="field-toggle" [for]="picker24" />
+          </div>
+          <ngx-mat-timepicker
+            #picker24
+            [format]="24"
+            orientation="vertical"
+            (timeSet)="onTimeSet($event)"
+          />
+        </div>
+
+        <div class="status-box">
+          <span class="status-label">Form Value:</span>
+          <code>{{ time24hControl.value }}</code>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 3: Horizontal (Landscape) -->
+    <article class="demo-card">
+      <div class="card-header">
+        <span class="card-badge">Widescreen</span>
+        <h3>Horizontal (Landscape)</h3>
+        <p>Optimized for tablets and landscape screens with side-by-side display and dial.</p>
+      </div>
+
+      <div class="card-body">
+        <div class="input-row">
+          <div class="field-container">
+            <input
+              type="text"
+              class="m3-text-field"
+              [ngxMatTimepicker]="pickerLandscape"
+              [formControl]="timeLandscapeControl"
+              placeholder="e.g. 07:30 AM"
+            />
+            <ngx-mat-timepicker-toggle class="field-toggle" [for]="pickerLandscape" />
+          </div>
+          <ngx-mat-timepicker
+            #pickerLandscape
+            [format]="12"
+            orientation="horizontal"
+            (timeSet)="onTimeSet($event)"
+          />
+        </div>
+
+        <div class="status-box">
+          <span class="status-label">Form Value:</span>
+          <code>{{ timeLandscapeControl.value }}</code>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 4: Step Interval -->
+    <article class="demo-card">
+      <div class="card-header">
+        <span class="card-badge">Custom Steps</span>
+        <h3>5-Minute Snapping</h3>
+        <p>Configured with <code>stepMinute="5"</code> for quarter/5-minute time slots.</p>
+      </div>
+
+      <div class="card-body">
+        <div class="input-row">
+          <div class="field-container">
+            <input
+              type="text"
+              class="m3-text-field"
+              [ngxMatTimepicker]="pickerStep5"
+              [formControl]="timeStep5Control"
+              placeholder="e.g. 09:15 AM"
+            />
+            <ngx-mat-timepicker-toggle class="field-toggle" [for]="pickerStep5" />
+          </div>
+          <ngx-mat-timepicker
+            #pickerStep5
+            [format]="12"
+            [stepMinute]="5"
+            (timeSet)="onTimeSet($event)"
+          />
+        </div>
+
+        <div class="status-box">
+          <span class="status-label">Form Value:</span>
+          <code>{{ timeStep5Control.value }}</code>
+        </div>
+      </div>
+    </article>
+  </main>
+
+  <!-- Live Embedded Dialog Showcase -->
+  <section class="embedded-section">
+    <div class="section-header">
+      <h2>Direct Inline Component Preview</h2>
+      <p>
+        The dialog component rendered directly in the DOM. Toggle between
+        <strong>Clock Dial mode</strong> and <strong>Text Input mode</strong> via the bottom-left icon!
+      </p>
+    </div>
+
+    <div class="embedded-preview-container">
+      <ngx-mat-timepicker-dialog
+        [initialTime]="embeddedTime()"
+        [format]="embeddedFormat()"
+        orientation="auto"
+        (timeSet)="onEmbeddedTimeSet($event)"
+      />
+
+      <div class="embedded-controls">
+        <h3>Live Properties</h3>
+        <div class="prop-group">
+          <label>Format:</label>
+          <div class="btn-group">
+            <button
+              class="small-btn"
+              [class.active]="embeddedFormat() === '12h'"
+              (click)="embeddedFormat.set('12h')"
+            >
+              12-Hour
+            </button>
+            <button
+              class="small-btn"
+              [class.active]="embeddedFormat() === '24h'"
+              (click)="embeddedFormat.set('24h')"
+            >
+              24-Hour
+            </button>
+          </div>
+        </div>
+
+        <div class="status-box mt-4">
+          <span class="status-label">Confirmed Value:</span>
+          <pre><code>{{ embeddedTime() | json }}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Playground Section -->
+  <section class="playground-section">
+    <div class="section-header">
+      <h2>Interactive Configuration Playground</h2>
+      <p>Customize time picker parameters and test the resulting popup in real time.</p>
+    </div>
+
+    <div class="playground-layout">
+      <!-- Options Panel -->
+      <div class="options-panel">
+        <div class="option-item">
+          <label>Format:</label>
+          <select [ngModel]="playgroundFormat()" (ngModelChange)="playgroundFormat.set($event)">
+            <option value="12h">12-Hour (AM/PM)</option>
+            <option value="24h">24-Hour (Concentric)</option>
+          </select>
+        </div>
+
+        <div class="option-item">
+          <label>Orientation:</label>
+          <select
+            [ngModel]="playgroundOrientation()"
+            (ngModelChange)="playgroundOrientation.set($event)"
+          >
+            <option value="auto">Auto (Responsive)</option>
+            <option value="vertical">Vertical (Portrait)</option>
+            <option value="horizontal">Horizontal (Landscape)</option>
+          </select>
+        </div>
+
+        <div class="option-item">
+          <label>Minute Step:</label>
+          <select
+            [ngModel]="playgroundStepMinute()"
+            (ngModelChange)="playgroundStepMinute.set(+$event)"
+          >
+            <option [value]="1">1 Minute</option>
+            <option [value]="5">5 Minutes</option>
+            <option [value]="10">10 Minutes</option>
+            <option [value]="15">15 Minutes</option>
+          </select>
+        </div>
+
+        <div class="option-item checkbox-item">
+          <label>
+            <input
+              type="checkbox"
+              [ngModel]="playgroundAutoAdvance()"
+              (ngModelChange)="playgroundAutoAdvance.set($event)"
+            />
+            Auto Advance (Hour &rarr; Minute)
+          </label>
+        </div>
+
+        <div class="option-item checkbox-item">
+          <label>
+            <input
+              type="checkbox"
+              [ngModel]="playgroundDisabled()"
+              (ngModelChange)="playgroundDisabled.set($event)"
+            />
+            Disabled
+          </label>
+        </div>
+      </div>
+
+      <!-- Playground Test Trigger -->
+      <div class="playground-result">
+        <div class="field-container wide">
+          <input
+            type="text"
+            class="m3-text-field"
+            [ngxMatTimepicker]="playgroundPicker"
+            [formControl]="playgroundControl"
+            placeholder="Select a time"
+          />
+          <ngx-mat-timepicker-toggle class="field-toggle" [for]="playgroundPicker" />
+        </div>
+
+        <ngx-mat-timepicker
+          #playgroundPicker
+          [format]="playgroundFormat()"
+          [orientation]="playgroundOrientation()"
+          [stepMinute]="playgroundStepMinute()"
+          [autoAdvance]="playgroundAutoAdvance()"
+          [disabled]="playgroundDisabled()"
+          (timeSet)="onTimeSet($event)"
+        />
+
+        <div class="status-box mt-4">
+          <span class="status-label">Last (timeSet) Event:</span>
+          <code>{{ lastTimeSetEvent() }}</code>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>
+      Built with Angular 22 &bull; Angular CDK Overlay &bull; Material 3 Specification &bull; MIT
+      License
+    </p>
+  </footer>
+</div>

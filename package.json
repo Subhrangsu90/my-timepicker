@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "ng serve demo",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
@@ -11,6 +11,7 @@
   "private": true,
   "packageManager": "npm@11.6.4",
   "dependencies": {
+    "@angular/animations": "^22.2.0",
     "@angular/cdk": "^22.2.0",
     "@angular/common": "^22.1.0",
     "@angular/compiler": "^22.1.0",

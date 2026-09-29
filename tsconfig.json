@@ -8,7 +8,10 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "ngx-mat-timepicker": ["./dist/ngx-mat-timepicker"]
+      "ngx-mat-timepicker": [
+        "./projects/ngx-mat-timepicker/src/public-api.ts",
+        "./dist/ngx-mat-timepicker"
+      ]
     },
     "skipLibCheck": true,
     "isolatedModules": true,
@@ -29,6 +32,12 @@
     },
     {
       "path": "./projects/ngx-mat-timepicker/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/demo/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/demo/tsconfig.spec.json"
     }
   ]
 }
