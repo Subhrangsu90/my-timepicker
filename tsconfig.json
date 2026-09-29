@@ -7,6 +7,9 @@
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "ngx-mat-timepicker": ["./dist/ngx-mat-timepicker"]
+    },
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
@@ -19,5 +22,13 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true
   },
-  "files": []
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/ngx-mat-timepicker/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/ngx-mat-timepicker/tsconfig.spec.json"
+    }
+  ]
 }
