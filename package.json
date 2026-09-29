@@ -4,9 +4,10 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve demo",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "build": "ng build ngx-mat-timepicker",
+    "build:demo": "ng build demo",
+    "watch": "ng build ngx-mat-timepicker --watch --configuration development",
+    "test": "ng test ngx-mat-timepicker"
   },
   "private": true,
   "packageManager": "npm@11.6.4",
