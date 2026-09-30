@@ -2,6 +2,12 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgxMatTimepicker } from '../ngx-mat-timepicker';
 
+/**
+ * Button component that toggles opening the connected `NgxMatTimepicker` overlay.
+ *
+ * Typically placed inside an Angular Material `mat-form-field` as a `matIconSuffix` or used standalone
+ * alongside an input element.
+ */
 @Component({
   selector: 'ngx-mat-timepicker-toggle',
   exportAs: 'ngxMatTimepickerToggle',
@@ -69,9 +75,21 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
   `,
 })
 export class NgxMatTimepickerToggle {
+  /**
+   * The `NgxMatTimepicker` instance controlled by this toggle button.
+   */
   readonly picker = input.required<NgxMatTimepicker>({ alias: 'for' });
+
+  /**
+   * Whether the toggle button is disabled.
+   * @default false
+   */
   readonly disabled = input<boolean>(false);
 
+  /**
+   * Handles button click to open the associated timepicker.
+   * @param event The mouse click event.
+   */
   onClick(event: MouseEvent): void {
     event.stopPropagation();
     this.picker().open();

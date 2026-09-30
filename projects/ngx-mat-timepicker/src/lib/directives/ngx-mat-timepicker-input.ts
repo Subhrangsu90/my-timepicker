@@ -15,6 +15,12 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
 import { TimepickerAdapter } from '../services/timepicker-adapter';
 import { TimeValue } from '../models/timepicker.model';
 
+/**
+ * Directive that connects a native text `<input>` element with an `NgxMatTimepicker`.
+ *
+ * Implements `ControlValueAccessor` to seamlessly support Angular Reactive Forms
+ * (`[formControl]`) and Template-Driven Forms (`[(ngModel)]`).
+ */
 @Directive({
   selector: 'input[ngxMatTimepicker]',
   exportAs: 'ngxMatTimepickerInput',
@@ -31,11 +37,28 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
   private elementRef = inject(ElementRef<HTMLInputElement>);
   private adapter = inject(TimepickerAdapter);
 
+  /**
+   * The `NgxMatTimepicker` instance associated with this input element.
+   */
   readonly ngxMatTimepicker = input.required<NgxMatTimepicker>();
 
+  /**
+   * The format of the value emitted to the attached form control.
+   * - `'auto'`: Automatically detects whether to emit a string or native `Date` object based on initial value.
+   * - `'string'`: Always emits formatted time strings (e.g. `'07:00 AM'`).
+   * - `'date'`: Always emits a native JavaScript `Date` instance with time components updated.
+   * @default 'auto'
+   */
   readonly valueType = input<'auto' | 'string' | 'date'>('auto');
 
+  /**
+   * Emits whenever the raw text value of the input changes.
+   */
   readonly timeChange = output<string>();
+
+  /**
+   * Emits whenever the time changes, represented as an updated JavaScript `Date` instance.
+   */
   readonly dateChange = output<Date>();
 
   private onChange: (value: string | Date) => void = () => {};
@@ -46,6 +69,9 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
   private originalDate: Date | null = null;
   private isDateMode = false;
 
+  /**
+   * Initializes the input directive, registers with the timepicker, and subscribes to time confirmations.
+   */
   ngOnInit(): void {
     const picker = this.ngxMatTimepicker();
     picker.registerInput(this);
@@ -70,6 +96,9 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     });
   }
 
+  /**
+   * Cleans up time subscriptions and unregisters from the associated timepicker instance.
+   */
   ngOnDestroy(): void {
     this.timeSetSub?.unsubscribe();
     const picker = this.ngxMatTimepicker();
@@ -78,6 +107,10 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     }
   }
 
+  /**
+   * Handles user keystroke input events on the native text field.
+   * @param event The native input Event.
+   */
   @HostListener('input', ['$event'])
   onInput(event: Event): void {
     const raw = (event.target as HTMLInputElement)?.value ?? '';
@@ -107,6 +140,9 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     }
   }
 
+  /**
+   * Handles blur events to format the final entered text according to the active time format.
+   */
   @HostListener('blur')
   onBlur(): void {
     this.onTouched();
@@ -132,6 +168,10 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     }
   }
 
+  /**
+   * Sets the input's value programmatically (from Angular form bindings).
+   * @param value A string, native Date object, or TimeValue.
+   */
   writeValue(value: string | Date | TimeValue | null): void {
     if (!value) {
       this.elementRef.nativeElement.value = '';
@@ -154,18 +194,34 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     this.elementRef.nativeElement.value = this.adapter.format(parsed, fmt);
   }
 
+  /**
+   * Registers a callback function to be executed when the form control value changes.
+   * @param fn The callback function.
+   */
   registerOnChange(fn: (value: string | Date) => void): void {
     this.onChange = fn;
   }
 
+  /**
+   * Registers a callback function to be executed when the input field is blurred.
+   * @param fn The callback function.
+   */
   registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
+  /**
+   * Disables or enables the native `<input>` element when the form control status changes.
+   * @param isDisabled Whether the control is disabled.
+   */
   setDisabledState(isDisabled: boolean): void {
     this.elementRef.nativeElement.disabled = isDisabled;
   }
 
+  /**
+   * Retrieves the current input value (from native input text, cached Date, or parsed TimeValue).
+   * Used by `NgxMatTimepicker` to synchronize the dialog when opened.
+   */
   getInputValue(): string | Date | TimeValue | null {
     const raw = this.elementRef.nativeElement.value?.trim();
     if (raw) {
@@ -177,6 +233,9 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     return this.parsedValue;
   }
 
+  /**
+   * Retrieves the parsed `TimeValue` representation of the current input value.
+   */
   getParsedValue(): TimeValue | null {
     return this.parsedValue;
   }

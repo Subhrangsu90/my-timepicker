@@ -2,6 +2,10 @@ import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 import { TimePickerStep } from '../models/timepicker.model';
 
+/**
+ * Injectable internationalization service that provides customizable text labels,
+ * button titles, and ARIA announcements across the timepicker library.
+ */
 @Injectable({
   providedIn: 'root',
 })

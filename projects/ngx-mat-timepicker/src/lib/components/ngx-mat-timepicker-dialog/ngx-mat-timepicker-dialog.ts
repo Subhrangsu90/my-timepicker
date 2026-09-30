@@ -235,38 +235,114 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
     }
   `,
 })
+/**
+ * Interactive Material Design 3 timepicker dialog component.
+ *
+ * Can be embedded directly into templates or rendered dynamically inside an overlay
+ * by `NgxMatTimepicker`. Supports clock dial mode, keyboard input fallback,
+ * responsive orientation, and multi-locale AM/PM handling.
+ */
 export class NgxMatTimepickerDialog implements OnInit {
   private adapter = inject(TimepickerAdapter);
   private a11y = inject(TimepickerA11y);
   readonly intl = inject(NgxMatTimepickerIntl);
 
+  /**
+   * Initial time value to display in the dialog (string, Date, or TimeValue).
+   */
   readonly initialTime = input<TimeValue | string | Date | null>(null);
+
+  /**
+   * The active time format (`'12h'` or `'24h'`).
+   * @default '12h'
+   */
   readonly format = input<TimeFormat>('12h');
+
+  /**
+   * Dialog orientation layout (`'auto'`, `'vertical'`, or `'horizontal'`).
+   * @default 'auto'
+   */
   readonly orientation = input<TimePickerOrientation>('auto');
+
+  /**
+   * Step increment for minute selection.
+   * @default 1
+   */
   readonly stepMinute = input<number>(1);
+
+  /**
+   * Whether selecting an hour on the dial automatically transitions to the minute step.
+   * @default true
+   */
   readonly autoAdvance = input<boolean>(true);
+
+  /**
+   * Custom label for the cancel button.
+   */
   readonly cancelLabel = input<string>('');
+
+  /**
+   * Custom label for the confirmation/OK button.
+   */
   readonly okLabel = input<string>('');
+
+  /**
+   * BCP-47 locale identifier for formatting.
+   */
   readonly locale = input<string | undefined>(undefined);
 
+  /**
+   * Emits the confirmed `TimeValue` when the user clicks OK/Aceptar.
+   */
   readonly timeSet = output<TimeValue>();
+
+  /**
+   * Emits when the dialog is dismissed or closed.
+   */
   readonly dialogClosed = output<void>();
 
+  /**
+   * Current interaction mode: `'dial'` (clock face) or `'input'` (numeric textboxes).
+   */
   readonly mode = signal<TimePickerMode>('dial');
+
+  /**
+   * Currently active dial selection step: `'hour'` or `'minute'`.
+   */
   readonly activeStep = signal<TimePickerStep>('hour');
 
+  /**
+   * The currently selected hour.
+   */
   readonly currentHour = signal<number>(7);
+
+  /**
+   * The currently selected minute.
+   */
   readonly currentMinute = signal<number>(0);
+
+  /**
+   * The currently selected period ('AM' or 'PM').
+   */
   readonly currentPeriod = signal<Period | undefined>('AM');
 
+  /**
+   * Computed boolean indicating if 24-hour military format is active.
+   */
   readonly is24Hour = computed(() => {
     return this.adapter.normalizeFormat(this.format()) === 24;
   });
 
+  /**
+   * Computed localized AM/PM labels based on current locale.
+   */
   readonly periodLabels = computed(() => {
     return this.adapter.getPeriodLabels(this.locale());
   });
 
+  /**
+   * Computed boolean indicating whether the landscape horizontal layout is active.
+   */
   readonly isLandscape = computed(() => {
     const ori = this.orientation();
     if (ori === 'horizontal') return true;
@@ -277,6 +353,9 @@ export class NgxMatTimepickerDialog implements OnInit {
     return false;
   });
 
+  /**
+   * Parses the initial time and initializes the hour, minute, and period signals.
+   */
   ngOnInit(): void {
     const fmt = this.adapter.normalizeFormat(this.format());
     const parsed = this.adapter.parse(this.initialTime(), fmt);
