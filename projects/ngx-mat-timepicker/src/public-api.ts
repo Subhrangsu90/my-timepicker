@@ -8,6 +8,7 @@ export * from './lib/models/timepicker.models';
 // Services
 export * from './lib/services/timepicker-adapter.service';
 export * from './lib/services/timepicker-a11y.service';
+export * from './lib/services/timepicker-intl.service';
 
 // Components
 export * from './lib/ngx-mat-timepicker';

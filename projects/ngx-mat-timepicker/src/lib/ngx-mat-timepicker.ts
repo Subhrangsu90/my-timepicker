@@ -42,11 +42,13 @@ export class NgxMatTimepicker implements OnDestroy {
   readonly orientation = input<TimePickerOrientation>('auto');
   readonly stepMinute = input<number>(1);
   readonly autoAdvance = input<boolean>(true);
-  readonly cancelLabel = input<string>('Cancel');
-  readonly okLabel = input<string>('OK');
+  readonly cancelLabel = input<string>('');
+  readonly okLabel = input<string>('');
   readonly disabled = input<boolean>(false);
+  readonly locale = input<string | undefined>(undefined);
 
   readonly timeSet = output<TimeValue>();
+  readonly dateSet = output<Date>();
   readonly closed = output<void>();
   readonly opened = output<void>();
 
@@ -86,11 +88,17 @@ export class NgxMatTimepicker implements OnDestroy {
     this.dialogComponentRef.setInput('autoAdvance', this.autoAdvance());
     this.dialogComponentRef.setInput('cancelLabel', this.cancelLabel());
     this.dialogComponentRef.setInput('okLabel', this.okLabel());
+    this.dialogComponentRef.setInput('locale', this.locale());
 
     // Subscriptions
     instance.timeSet.subscribe((val: TimeValue) => {
       this.currentTimeValue = val;
       this.timeSet.emit(val);
+
+      const fmt = this.adapter.normalizeFormat(this.format());
+      const baseDate = this.currentTimeValue instanceof Date ? this.currentTimeValue : undefined;
+      const dateObj = this.adapter.toDate(val, fmt, baseDate);
+      this.dateSet.emit(dateObj);
     });
 
     instance.dialogClosed.subscribe(() => {

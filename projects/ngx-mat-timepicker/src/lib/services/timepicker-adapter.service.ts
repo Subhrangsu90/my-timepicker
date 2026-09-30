@@ -1,10 +1,29 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, LOCALE_ID } from '@angular/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats } from '@angular/material/core';
 import { Period, TimeFormat, TimeValue } from '../models/timepicker.models';
+import { NgxMatTimepickerIntl } from './timepicker-intl.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TimepickerAdapterService {
+  private _dateAdapter = inject<DateAdapter<unknown> | null>(DateAdapter, { optional: true });
+  private _matDateLocale = inject<string | null>(MAT_DATE_LOCALE, { optional: true });
+  private _dateFormats = inject<MatDateFormats | null>(MAT_DATE_FORMATS, { optional: true });
+  private _localeId = inject(LOCALE_ID);
+  private _intl = inject(NgxMatTimepickerIntl);
+
+  /**
+   * Returns active locale code (from DateAdapter, MAT_DATE_LOCALE, or LOCALE_ID)
+   */
+  getLocale(): string {
+    if (this._dateAdapter) {
+      const adapterLocale = (this._dateAdapter as unknown as { locale?: string }).locale;
+      if (adapterLocale) return adapterLocale;
+    }
+    return this._matDateLocale || this._localeId || 'en-US';
+  }
+
   /**
    * Normalizes the format to 12 or 24
    */
@@ -16,30 +35,83 @@ export class TimepickerAdapterService {
   }
 
   /**
-   * Parse input value (string, Date, or TimeValue) to TimeValue
+   * Retrieves localized AM/PM labels for the given or active locale
    */
-  parse(value: string | Date | TimeValue | null | undefined, format: 12 | 24 = 12): TimeValue {
+  getPeriodLabels(locale?: string): { am: string; pm: string } {
+    const loc = locale || this.getLocale();
+    try {
+      // Use Intl to extract localized AM/PM designations
+      const formatter = new Intl.DateTimeFormat(loc, { hour: 'numeric', hour12: true });
+      const amDate = new Date(2026, 0, 1, 9, 0, 0); // 9:00 AM
+      const pmDate = new Date(2026, 0, 1, 21, 0, 0); // 9:00 PM
+
+      const amParts = formatter.formatToParts(amDate);
+      const pmParts = formatter.formatToParts(pmDate);
+
+      const amPart = amParts.find((p) => p.type === 'dayPeriod')?.value;
+      const pmPart = pmParts.find((p) => p.type === 'dayPeriod')?.value;
+
+      return {
+        am: amPart || this._intl.amLabel,
+        pm: pmPart || this._intl.pmLabel,
+      };
+    } catch {
+      return {
+        am: this._intl.amLabel,
+        pm: this._intl.pmLabel,
+      };
+    }
+  }
+
+  /**
+   * Parse input value (string, Date, DateAdapter date instance, or TimeValue) to TimeValue
+   */
+  parse(value: unknown, format: 12 | 24 = 12): TimeValue {
     if (!value) {
-      const now = new Date();
-      return this.fromDateTime(now, format);
+      return this.fromDateTime(new Date(), format);
+    }
+
+    // Check if input is supported by DateAdapter (Moment, Luxon, DateFns, etc.)
+    if (this._dateAdapter && this._dateAdapter.isDateInstance(value)) {
+      const rawHour = (this._dateAdapter as unknown as { getHours?: (d: unknown) => number }).getHours?.(value) ??
+        (value instanceof Date ? value.getHours() : 0);
+      const rawMinute = (this._dateAdapter as unknown as { getMinutes?: (d: unknown) => number }).getMinutes?.(value) ??
+        (value instanceof Date ? value.getMinutes() : 0);
+      return this.fromHourMinute(rawHour, rawMinute, format);
     }
 
     if (value instanceof Date) {
       return this.fromDateTime(value, format);
     }
 
-    if (typeof value === 'object' && 'hour' in value && 'minute' in value) {
-      return this.normalizeTimeValue(value, format);
+    if (typeof value === 'object' && value !== null && 'hour' in value && 'minute' in value) {
+      return this.normalizeTimeValue(value as TimeValue, format);
     }
 
     if (typeof value === 'string') {
       const trimmed = value.trim();
-      // Match patterns like "07:30", "7:30 PM", "14:25", "11:00am"
-      const match = trimmed.match(/^(\d{1,2}):(\d{2})(?:\s*([aApP][mM]))?$/);
+      const periods = this.getPeriodLabels();
+
+      // Flexible regex accepting English or localized period strings (AM/PM, a.m./p.m., 오전/오후, etc.)
+      const match = trimmed.match(/^(\d{1,2})[:.](\d{2})(?:\s*(.+))?$/);
       if (match) {
         let hour = parseInt(match[1], 10);
         const minute = parseInt(match[2], 10);
-        let period: Period | undefined = match[3] ? (match[3].toUpperCase() as Period) : undefined;
+        const periodStr = match[3]?.trim();
+
+        let period: Period | undefined = undefined;
+        if (periodStr) {
+          const upper = periodStr.toUpperCase();
+          if (
+            upper.includes('P') ||
+            upper.includes('PM') ||
+            upper.includes(periods.pm.toUpperCase())
+          ) {
+            period = 'PM';
+          } else {
+            period = 'AM';
+          }
+        }
 
         if (format === 12) {
           if (!period) {
@@ -64,25 +136,28 @@ export class TimepickerAdapterService {
   }
 
   /**
-   * Convert a Date object to TimeValue
+   * Convert hour (0..23) and minute (0..59) to TimeValue
    */
-  fromDateTime(date: Date, format: 12 | 24): TimeValue {
-    const rawHours = date.getHours();
-    const minutes = date.getMinutes();
-
+  fromHourMinute(rawHours: number, minutes: number, format: 12 | 24): TimeValue {
     if (format === 24) {
       return { hour: rawHours, minute: minutes };
     }
-
     const period: Period = rawHours >= 12 ? 'PM' : 'AM';
     const hour = rawHours % 12 || 12;
     return { hour, minute: minutes, period };
   }
 
   /**
-   * Convert TimeValue to formatted display string
+   * Convert a Date object to TimeValue
    */
-  format(time: TimeValue, format: 12 | 24): string {
+  fromDateTime(date: Date, format: 12 | 24): TimeValue {
+    return this.fromHourMinute(date.getHours(), date.getMinutes(), format);
+  }
+
+  /**
+   * Convert TimeValue to formatted display string with localization support
+   */
+  format(time: TimeValue, format: 12 | 24, locale?: string): string {
     const paddedMinute = time.minute.toString().padStart(2, '0');
 
     if (format === 24) {
@@ -91,8 +166,9 @@ export class TimepickerAdapterService {
     }
 
     const paddedHour = time.hour.toString().padStart(2, '0');
-    const period = time.period ?? 'AM';
-    return `${paddedHour}:${paddedMinute} ${period}`;
+    const periods = this.getPeriodLabels(locale);
+    const periodLabel = time.period === 'PM' ? periods.pm : periods.am;
+    return `${paddedHour}:${paddedMinute} ${periodLabel}`;
   }
 
   /**
@@ -168,5 +244,19 @@ export class TimepickerAdapterService {
     }
 
     return { hour: Math.min(23, Math.max(0, hour)), minute };
+  }
+
+  /**
+   * Convert a TimeValue to a JavaScript Date object, applying hours and minutes to a base Date
+   * (or today's date if omitted). Preserves the local timezone (e.g. GMT+0530).
+   */
+  toDate(time: TimeValue, format: 12 | 24 = 12, baseDate?: Date): Date {
+    const d = baseDate ? new Date(baseDate.getTime()) : new Date();
+    let hours = time.hour;
+    if (format === 12) {
+      hours = this.to24Hour(time.hour, time.period ?? 'AM');
+    }
+    d.setHours(hours, time.minute, 0, 0);
+    return d;
   }
 }

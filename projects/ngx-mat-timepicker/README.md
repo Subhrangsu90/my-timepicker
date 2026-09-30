@@ -95,6 +95,7 @@ export class ExampleComponent {
 | Output Event | Type | Description |
 |---|---|---|
 | `timeSet` | `TimeValue` | Emits the confirmed `{ hour, minute, period }` object. |
+| `dateSet` | `Date` | Emits a native JavaScript `Date` instance with local timezone (e.g. `00:00:00 GMT+0530`). |
 | `opened` | `void` | Emits when the modal dialog is opened. |
 | `closed` | `void` | Emits when the modal dialog is closed. |
 

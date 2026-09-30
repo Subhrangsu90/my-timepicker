@@ -82,4 +82,29 @@ describe('TimepickerAdapterService', () => {
       expect(service.to24Hour(9, 'AM')).toBe(9);
     });
   });
+
+  describe('toDate', () => {
+    it('should convert 12h midnight (12:00 AM) to 00:00:00 Date', () => {
+      const base = new Date(2026, 8, 30); // 30 Sep 2026
+      const date = service.toDate({ hour: 12, minute: 0, period: 'AM' }, 12, base);
+      expect(date.getHours()).toBe(0);
+      expect(date.getMinutes()).toBe(0);
+      expect(date.getSeconds()).toBe(0);
+      expect(date.getFullYear()).toBe(2026);
+    });
+
+    it('should convert 24h midnight (00:00) to 00:00:00 Date', () => {
+      const base = new Date(2026, 8, 30);
+      const date = service.toDate({ hour: 0, minute: 0 }, 24, base);
+      expect(date.getHours()).toBe(0);
+      expect(date.getMinutes()).toBe(0);
+      expect(date.getSeconds()).toBe(0);
+    });
+
+    it('should convert 12h PM time (11:30 PM) to 23:30 Date', () => {
+      const date = service.toDate({ hour: 11, minute: 30, period: 'PM' }, 12);
+      expect(date.getHours()).toBe(23);
+      expect(date.getMinutes()).toBe(30);
+    });
+  });
 });

@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { A11yModule } from '@angular/cdk/a11y';
+import { BidiModule } from '@angular/cdk/bidi';
 import {
   Period,
   TimeFormat,
@@ -20,6 +21,7 @@ import {
 } from '../../models/timepicker.models';
 import { TimepickerAdapterService } from '../../services/timepicker-adapter.service';
 import { TimepickerA11yService } from '../../services/timepicker-a11y.service';
+import { NgxMatTimepickerIntl } from '../../services/timepicker-intl.service';
 import { NgxMatTimeDisplayComponent } from '../time-display/time-display.component';
 import { NgxMatPeriodToggleComponent } from '../period-toggle/period-toggle.component';
 import { NgxMatClockDialComponent } from '../clock-dial/clock-dial.component';
@@ -32,6 +34,7 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
   imports: [
     CommonModule,
     A11yModule,
+    BidiModule,
     NgxMatTimeDisplayComponent,
     NgxMatPeriodToggleComponent,
     NgxMatClockDialComponent,
@@ -53,7 +56,7 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
       <!-- Headline / Title -->
       <div class="dialog-header">
         <span id="tp-dialog-title" class="dialog-headline">
-          {{ mode() === 'dial' ? 'Select time' : 'Enter time' }}
+          {{ mode() === 'dial' ? intl.selectTimeLabel : intl.enterTimeLabel }}
         </span>
       </div>
 
@@ -71,7 +74,10 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
                 [activeStep]="activeStep()"
                 [mode]="mode()"
                 [is24Hour]="is24Hour()"
+                [stepMinute]="stepMinute()"
                 (stepChange)="onStepChange($event)"
+                (hourChange)="onHourValChange($event)"
+                (minuteChange)="onMinuteValChange($event)"
               />
 
               <!-- Period Selector (if 12h) -->
@@ -80,6 +86,8 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
                   <ngx-mat-period-toggle
                     [period]="currentPeriod() ?? 'AM'"
                     [orientation]="isLandscape() ? 'horizontal' : 'vertical'"
+                    [amLabel]="periodLabels().am"
+                    [pmLabel]="periodLabels().pm"
                     (periodChange)="onPeriodChange($event)"
                   />
                 </div>
@@ -102,6 +110,8 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
                   <ngx-mat-period-toggle
                     [period]="currentPeriod() ?? 'AM'"
                     [orientation]="isLandscape() ? 'horizontal' : 'vertical'"
+                    [amLabel]="periodLabels().am"
+                    [pmLabel]="periodLabels().pm"
                     (periodChange)="onPeriodChange($event)"
                   />
                 </div>
@@ -131,8 +141,8 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
       <!-- Action Bar -->
       <ngx-mat-action-bar
         [mode]="mode()"
-        [cancelLabel]="cancelLabel()"
-        [okLabel]="okLabel()"
+        [cancelLabel]="cancelLabel() || intl.cancelLabel"
+        [okLabel]="okLabel() || intl.okLabel"
         (modeToggle)="toggleMode()"
         (cancel)="onCancel()"
         (confirm)="onConfirm()"
@@ -228,14 +238,16 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
 export class NgxMatTimepickerDialogComponent implements OnInit {
   private adapter = inject(TimepickerAdapterService);
   private a11y = inject(TimepickerA11yService);
+  readonly intl = inject(NgxMatTimepickerIntl);
 
   readonly initialTime = input<TimeValue | string | Date | null>(null);
   readonly format = input<TimeFormat>('12h');
   readonly orientation = input<TimePickerOrientation>('auto');
   readonly stepMinute = input<number>(1);
   readonly autoAdvance = input<boolean>(true);
-  readonly cancelLabel = input<string>('Cancel');
-  readonly okLabel = input<string>('OK');
+  readonly cancelLabel = input<string>('');
+  readonly okLabel = input<string>('');
+  readonly locale = input<string | undefined>(undefined);
 
   readonly timeSet = output<TimeValue>();
   readonly dialogClosed = output<void>();
@@ -251,11 +263,14 @@ export class NgxMatTimepickerDialogComponent implements OnInit {
     return this.adapter.normalizeFormat(this.format()) === 24;
   });
 
+  readonly periodLabels = computed(() => {
+    return this.adapter.getPeriodLabels(this.locale());
+  });
+
   readonly isLandscape = computed(() => {
     const ori = this.orientation();
     if (ori === 'horizontal') return true;
     if (ori === 'vertical') return false;
-    // 'auto' detects viewport orientation
     if (typeof window !== 'undefined' && window.matchMedia) {
       return window.matchMedia('(min-width: 600px) and (orientation: landscape)').matches;
     }

@@ -30,14 +30,18 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
   private adapter = inject(TimepickerAdapterService);
 
   readonly ngxMatTimepicker = input.required<NgxMatTimepicker>();
+  readonly valueType = input<'auto' | 'string' | 'date'>('auto');
 
   readonly timeChange = output<string>();
+  readonly dateChange = output<Date>();
 
-  private onChange: (value: string) => void = () => {};
+  private onChange: (value: string | Date) => void = () => {};
   private onTouched: () => void = () => {};
 
   private timeSetSub: { unsubscribe(): void } | null = null;
   private parsedValue: TimeValue | null = null;
+  private originalDate: Date | null = null;
+  private isDateMode = false;
 
   ngOnInit(): void {
     const picker = this.ngxMatTimepicker();
@@ -46,7 +50,17 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
       const fmt = this.adapter.normalizeFormat(picker.format());
       const formatted = this.adapter.format(time, fmt);
       this.elementRef.nativeElement.value = formatted;
-      this.onChange(formatted);
+
+      const dateObj = this.adapter.toDate(time, fmt, this.originalDate ?? undefined);
+      this.originalDate = dateObj;
+      this.dateChange.emit(dateObj);
+
+      const emitAsDate = this.valueType() === 'date' || (this.valueType() === 'auto' && this.isDateMode);
+      if (emitAsDate) {
+        this.onChange(dateObj);
+      } else {
+        this.onChange(formatted);
+      }
       this.timeChange.emit(formatted);
     });
   }
@@ -57,9 +71,21 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
 
   @HostListener('input', ['$event'])
   onInput(event: Event): void {
-    const value = (event.target as HTMLInputElement)?.value ?? '';
-    this.onChange(value);
-    this.timeChange.emit(value);
+    const raw = (event.target as HTMLInputElement)?.value ?? '';
+    const picker = this.ngxMatTimepicker();
+    const fmt = this.adapter.normalizeFormat(picker.format());
+    this.timeChange.emit(raw);
+
+    const emitAsDate = this.valueType() === 'date' || (this.valueType() === 'auto' && this.isDateMode);
+    if (emitAsDate && raw) {
+      const parsed = this.adapter.parse(raw, fmt);
+      const dateObj = this.adapter.toDate(parsed, fmt, this.originalDate ?? undefined);
+      this.originalDate = dateObj;
+      this.onChange(dateObj);
+      this.dateChange.emit(dateObj);
+    } else {
+      this.onChange(raw);
+    }
   }
 
   @HostListener('blur')
@@ -73,7 +99,17 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
       this.parsedValue = parsed;
       const formatted = this.adapter.format(parsed, fmt);
       this.elementRef.nativeElement.value = formatted;
-      this.onChange(formatted);
+
+      const dateObj = this.adapter.toDate(parsed, fmt, this.originalDate ?? undefined);
+      this.originalDate = dateObj;
+      this.dateChange.emit(dateObj);
+
+      const emitAsDate = this.valueType() === 'date' || (this.valueType() === 'auto' && this.isDateMode);
+      if (emitAsDate) {
+        this.onChange(dateObj);
+      } else {
+        this.onChange(formatted);
+      }
     }
   }
 
@@ -81,8 +117,17 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
     if (!value) {
       this.elementRef.nativeElement.value = '';
       this.parsedValue = null;
+      this.originalDate = null;
       return;
     }
+
+    if (value instanceof Date) {
+      this.isDateMode = true;
+      this.originalDate = new Date(value.getTime());
+    } else if (typeof value === 'string') {
+      this.isDateMode = false;
+    }
+
     const picker = this.ngxMatTimepicker();
     const fmt = this.adapter.normalizeFormat(picker?.format?.() ?? 12);
     const parsed = this.adapter.parse(value, fmt);
@@ -90,7 +135,7 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
     this.elementRef.nativeElement.value = this.adapter.format(parsed, fmt);
   }
 
-  registerOnChange(fn: (value: string) => void): void {
+  registerOnChange(fn: (value: string | Date) => void): void {
     this.onChange = fn;
   }
 

@@ -141,7 +141,8 @@ The orchestrator component that controls the dialog overlay.
 #### Outputs
 | Event | Type | Description |
 |---|---|---|
-| `timeSet` | `OutputEmitterRef<TimeValue>` | Emitted when user confirms time selection with OK. |
+| `timeSet` | `OutputEmitterRef<TimeValue>` | Emitted when user confirms time selection with OK (`{ hour, minute, period }`). |
+| `dateSet` | `OutputEmitterRef<Date>` | Emitted when user confirms time selection, returning a native JavaScript `Date` instance with local timezone (e.g. `00:00:00 GMT+0530`). |
 | `opened` | `OutputEmitterRef<void>` | Emitted when dialog overlay is displayed. |
 | `closed` | `OutputEmitterRef<void>` | Emitted when dialog overlay is dismissed. |
 
@@ -161,11 +162,19 @@ Directive applied to `<input>` fields to connect with `<ngx-mat-timepicker>`. Im
 | Property | Type | Required | Description |
 |---|---|---|---|
 | `ngxMatTimepicker` | `NgxMatTimepicker` | **Yes** | Reference to the `<ngx-mat-timepicker>` component instance. |
+| `valueType` | `'auto' \| 'string' \| 'date'` | No (Default: `'auto'`) | Determines the model format bound to `FormControl` or `ngModel`. If `'date'` (or `'auto'` when initially bound to a `Date`), outputs a real JavaScript `Date` object with local timezone (e.g. `00:00:00 GMT+0530`). |
 
 #### Outputs
 | Event | Type | Description |
 |---|---|---|
-| `timeChange` | `OutputEmitterRef<string>` | Emitted when input value changes. |
+| `timeChange` | `OutputEmitterRef<string>` | Emitted when input value changes (formatted string). |
+| `dateChange` | `OutputEmitterRef<Date>` | Emitted when a time is selected, returning a real JavaScript `Date` object. |
+
+#### Value Types & Angular Material Model Comparison
+| Picker | Value Type | Empty Value | Example (8:30 PM) |
+|---|---|---|---|
+| **Angular Material timepicker** / `ngx-mat-timepicker` | `D` (default `Date` with `valueType="date"`) | `null` | JavaScript `Date` with time `20:30` in local timezone |
+| **String Mode** | `string` (with `valueType="string"`) | `''` / `null` | `"08:30 PM"` or `"20:30"` |
 
 ---
 
@@ -222,6 +231,18 @@ Handles screen reader announcements and standardized keyboard event translations
 - `announceSelection(step: TimePickerStep, value: number, period?: string): void`
 - `handleStepKeyboardNav(event, currentVal, step, format, stepMinute): number | null`
 
+#### `NgxMatTimepickerIntl`
+Configurable internationalization provider for all user-facing labels and screen reader announcements:
+- `selectTimeLabel`: Header in dial mode (default: `'Select time'`)
+- `enterTimeLabel`: Header in input mode (default: `'Enter time'`)
+- `hourLabel`: Label under hour input (default: `'Hour'`)
+- `minuteLabel`: Label under minute input (default: `'Minute'`)
+- `amLabel`: Localized AM indicator (default: `'AM'`)
+- `pmLabel`: Localized PM indicator (default: `'PM'`)
+- `cancelLabel`: Cancel button text (default: `'Cancel'`)
+- `okLabel`: OK button text (default: `'OK'`)
+- `changes: Subject<void>`: Trigger to notify all active pickers of runtime translations.
+
 ---
 
 ### TypeScript Interfaces & Types
@@ -276,10 +297,16 @@ export interface TimepickerConfig {
   - Left column: Time display with horizontal AM/PM toggle below (`216×40dp`).
   - Right column: Clock dial.
 
-### Dial Mode vs. Text Input Mode
-- Users can click the **keyboard icon** (⌨) in the bottom-left corner at any time to toggle to **Text Input mode** ("Enter time").
-- Text inputs provide two 2-digit numeric fields for Hour and Minute with automatic focus advancement.
-- Clicking the **clock icon** (🕒) returns to the dial view without losing state.
+### Simultaneous Keyboard & Touch Interaction ("Do Both")
+- **Always Editable Display Boxes**: The Hour and Minute boxes on the clock dial screen are active numeric `<input>` fields at all times. Users do not have to switch modes to type on their keyboard or virtual keypad.
+- **Instant Two-Way Synchronization**:
+  - Typing digits into the Hour or Minute box moves the analog clock dial hand in real-time.
+  - Touching or dragging the analog clock dial updates the numeric input values immediately.
+- **Smart Auto-Advance & Navigation**:
+  - Typing 2 digits (or a single complete digit in 12h/24h mode) automatically advances focus to the Minute box.
+  - <kbd>Arrow Up</kbd> / <kbd>Arrow Down</kbd> cycles through hours and minutes with boundaries wrapping around.
+  - <kbd>Arrow Left</kbd> / <kbd>Arrow Right</kbd> or <kbd>Backspace</kbd> moves cursor seamlessly between Hour and Minute fields.
+- **Text-Only Compact Mode**: Clicking the **keyboard icon** (⌨) in the bottom-left corner collapses the dialog into an ultra-compact layout by hiding the clock dial.
 
 ---
 

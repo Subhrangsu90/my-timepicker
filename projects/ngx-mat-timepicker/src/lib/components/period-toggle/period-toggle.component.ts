@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Period } from '../../models/timepicker.models';
+import { NgxMatTimepickerIntl } from '../../services/timepicker-intl.service';
 
 @Component({
   selector: 'ngx-mat-period-toggle',
@@ -21,9 +22,9 @@ import { Period } from '../../models/timepicker.models';
         (click)="selectPeriod('AM')"
         role="radio"
         [attr.aria-checked]="period() === 'AM'"
-        aria-label="AM"
+        [attr.aria-label]="amText()"
       >
-        <span class="period-text">AM</span>
+        <span class="period-text">{{ amText() }}</span>
       </button>
 
       <div class="segment-divider"></div>
@@ -35,9 +36,9 @@ import { Period } from '../../models/timepicker.models';
         (click)="selectPeriod('PM')"
         role="radio"
         [attr.aria-checked]="period() === 'PM'"
-        aria-label="PM"
+        [attr.aria-label]="pmText()"
       >
-        <span class="period-text">PM</span>
+        <span class="period-text">{{ pmText() }}</span>
       </button>
     </div>
   `,
@@ -110,10 +111,22 @@ import { Period } from '../../models/timepicker.models';
   `,
 })
 export class NgxMatPeriodToggleComponent {
+  private intl = inject(NgxMatTimepickerIntl);
+
   readonly period = input.required<Period>();
   readonly orientation = input<'vertical' | 'horizontal'>('vertical');
+  readonly amLabel = input<string | undefined>(undefined);
+  readonly pmLabel = input<string | undefined>(undefined);
 
   readonly periodChange = output<Period>();
+
+  amText(): string {
+    return this.amLabel() || this.intl.amLabel;
+  }
+
+  pmText(): string {
+    return this.pmLabel() || this.intl.pmLabel;
+  }
 
   selectPeriod(p: Period): void {
     if (this.period() !== p) {

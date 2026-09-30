@@ -201,6 +201,127 @@
         </div>
       </div>
     </article>
+
+    <!-- Card 5: Internationalization (i18n & Locales) -->
+    <article class="demo-card" [attr.dir]="isRtl() ? 'rtl' : 'ltr'">
+      <div class="card-header">
+        <span class="card-badge">Internationalization</span>
+        <h3>i18n & Locale Switching</h3>
+        <p>Dynamic runtime translation via <code>NgxMatTimepickerIntl</code>, <code>DateAdapter</code> & RTL support.</p>
+      </div>
+
+      <div class="card-body">
+        <!-- Locale Selector Pills -->
+        <div class="btn-group" style="margin-bottom: 8px; flex-wrap: wrap;">
+          <button
+            type="button"
+            class="small-btn"
+            [class.active]="selectedLocale() === 'en-US'"
+            (click)="setLocale('en-US')"
+          >
+            English
+          </button>
+          <button
+            type="button"
+            class="small-btn"
+            [class.active]="selectedLocale() === 'es-ES'"
+            (click)="setLocale('es-ES')"
+          >
+            Español
+          </button>
+          <button
+            type="button"
+            class="small-btn"
+            [class.active]="selectedLocale() === 'fr-FR'"
+            (click)="setLocale('fr-FR')"
+          >
+            Français
+          </button>
+          <button
+            type="button"
+            class="small-btn"
+            [class.active]="selectedLocale() === 'de-DE'"
+            (click)="setLocale('de-DE')"
+          >
+            Deutsch
+          </button>
+          <button
+            type="button"
+            class="small-btn"
+            [class.active]="selectedLocale() === 'ar-SA'"
+            (click)="setLocale('ar-SA')"
+          >
+            العربية (RTL)
+          </button>
+        </div>
+
+        <div class="input-row">
+          <div class="field-container">
+            <input
+              type="text"
+              class="m3-text-field"
+              [ngxMatTimepicker]="pickerI18n"
+              [formControl]="timeLocaleControl"
+              placeholder="Pick localized time"
+            />
+            <ngx-mat-timepicker-toggle class="field-toggle" [for]="pickerI18n" />
+          </div>
+          <ngx-mat-timepicker
+            #pickerI18n
+            [format]="12"
+            [locale]="selectedLocale()"
+            (timeSet)="onTimeSet($event)"
+          />
+        </div>
+
+        <div class="status-box">
+          <span class="status-label">Active Locale:</span>
+          <code>{{ selectedLocale() }} ({{ isRtl() ? 'RTL' : 'LTR' }})</code>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 6: JavaScript Date() & Timezone Output -->
+    <article class="demo-card">
+      <div class="card-header">
+        <span class="card-badge">Date Object & Timezone</span>
+        <h3>JavaScript Date() Output</h3>
+        <p>Binds directly to a JavaScript <code>Date</code> object preserving local timezone (e.g. <code>00:00:00 GMT+0530</code>).</p>
+      </div>
+
+      <div class="card-body">
+        <div class="input-row">
+          <div class="field-container">
+            <input
+              type="text"
+              class="m3-text-field"
+              [ngxMatTimepicker]="pickerDate"
+              [formControl]="timeDateControl"
+              valueType="date"
+              placeholder="e.g. 12:00 AM"
+            />
+            <ngx-mat-timepicker-toggle class="field-toggle" [for]="pickerDate" />
+          </div>
+          <ngx-mat-timepicker
+            #pickerDate
+            [format]="12"
+            (dateSet)="onDateSet($event)"
+            (timeSet)="onTimeSet($event)"
+          />
+        </div>
+
+        <div class="status-box">
+          <span class="status-label">Form Value (Date.toString):</span>
+          <code style="word-break: break-all; font-size: 0.82rem;">{{ timeDateControl.value?.toString() }}</code>
+        </div>
+        @if (lastDateSetEvent()) {
+          <div class="status-box" style="margin-top: 8px;">
+            <span class="status-label">Emitted (dateSet):</span>
+            <code style="word-break: break-all; font-size: 0.82rem;">{{ lastDateSetEvent() }}</code>
+          </div>
+        }
+      </div>
+    </article>
   </main>
 
   <!-- Live Embedded Dialog Showcase -->
