@@ -23,6 +23,7 @@ import { TimepickerAdapterService } from './services/timepicker-adapter.service'
 
 @Component({
   selector: 'ngx-mat-timepicker',
+  exportAs: 'ngxMatTimepicker',
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,

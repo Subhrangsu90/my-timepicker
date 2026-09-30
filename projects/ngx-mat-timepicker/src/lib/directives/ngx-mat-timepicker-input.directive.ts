@@ -1,4 +1,5 @@
 import {
+  computed,
   Directive,
   ElementRef,
   forwardRef,
@@ -16,6 +17,7 @@ import { TimeValue } from '../models/timepicker.models';
 
 @Directive({
   selector: 'input[ngxMatTimepicker]',
+  exportAs: 'ngxMatTimepickerInput',
   standalone: true,
   providers: [
     {
@@ -30,6 +32,7 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
   private adapter = inject(TimepickerAdapterService);
 
   readonly ngxMatTimepicker = input.required<NgxMatTimepicker>();
+
   readonly valueType = input<'auto' | 'string' | 'date'>('auto');
 
   readonly timeChange = output<string>();

@@ -4,6 +4,7 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
 
 @Component({
   selector: 'ngx-mat-timepicker-toggle',
+  exportAs: 'ngxMatTimepickerToggle',
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -29,6 +30,7 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
       align-items: center;
       justify-content: center;
       vertical-align: middle;
+      box-sizing: border-box;
     }
 
     .timepicker-toggle-button {
@@ -40,7 +42,7 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
       background: transparent;
       border: none;
       border-radius: 50%;
-      color: var(--ngx-mat-tp-action-icon, #49454f);
+      color: var(--mat-form-field-icon-color, var(--ngx-mat-tp-action-icon, #49454f));
       cursor: pointer;
       outline: none;
       padding: 0;

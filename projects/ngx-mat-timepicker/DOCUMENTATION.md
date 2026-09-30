@@ -119,6 +119,47 @@ export class TimeDemoComponent {
 }
 ```
 
+### Integration with Angular Material `<mat-form-field>`
+
+You can use the timepicker directly inside an Angular Material `<mat-form-field>` with `matInput` and `matIconSuffix`:
+
+```html
+<mat-form-field appearance="outline">
+  <mat-label>Pick a time</mat-label>
+  <input matInput [ngxMatTimepicker]="picker" [formControl]="meetingTime" />
+  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker" />
+  <ngx-mat-timepicker #picker [format]="12" />
+</mat-form-field>
+```
+
+```typescript
+import { Component } from '@angular/core';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {
+  NgxMatTimepicker,
+  NgxMatTimepickerInputDirective,
+  NgxMatTimepickerToggleComponent,
+} from 'ngx-mat-timepicker';
+
+@Component({
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    NgxMatTimepicker,
+    NgxMatTimepickerInputDirective,
+    NgxMatTimepickerToggleComponent,
+  ],
+  template: `...`,
+})
+export class MyComponent {
+  readonly meetingTime = new FormControl('07:00 AM');
+}
+```
+
 ---
 
 ## 4. API Reference
