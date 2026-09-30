@@ -48,6 +48,8 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
 
   ngOnInit(): void {
     const picker = this.ngxMatTimepicker();
+    picker.registerInput(this);
+
     this.timeSetSub = picker.timeSet.subscribe((time: TimeValue) => {
       this.parsedValue = time;
       const fmt = this.adapter.normalizeFormat(picker.format());
@@ -70,6 +72,10 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
 
   ngOnDestroy(): void {
     this.timeSetSub?.unsubscribe();
+    const picker = this.ngxMatTimepicker();
+    if (picker) {
+      picker.registerInput(null);
+    }
   }
 
   @HostListener('input', ['$event'])
@@ -78,6 +84,16 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     const picker = this.ngxMatTimepicker();
     const fmt = this.adapter.normalizeFormat(picker.format());
     this.timeChange.emit(raw);
+
+    if (raw.trim()) {
+      try {
+        this.parsedValue = this.adapter.parse(raw.trim(), fmt);
+      } catch {
+        // Ignore parsing errors while user is actively typing
+      }
+    } else {
+      this.parsedValue = null;
+    }
 
     const emitAsDate = this.valueType() === 'date' || (this.valueType() === 'auto' && this.isDateMode);
     if (emitAsDate && raw) {
@@ -148,6 +164,17 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
 
   setDisabledState(isDisabled: boolean): void {
     this.elementRef.nativeElement.disabled = isDisabled;
+  }
+
+  getInputValue(): string | Date | TimeValue | null {
+    const raw = this.elementRef.nativeElement.value?.trim();
+    if (raw) {
+      return raw;
+    }
+    if (this.originalDate) {
+      return this.originalDate;
+    }
+    return this.parsedValue;
   }
 
   getParsedValue(): TimeValue | null {

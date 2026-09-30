@@ -869,27 +869,18 @@
                 [style.--ngx-mat-tp-dial-hand]="customPrimaryColor()"
                 [style.--ngx-mat-tp-dial-pin]="customPrimaryColor()"
                 [style.--ngx-mat-tp-dial-handle-bg]="customPrimaryColor()"
+                [style.--ngx-mat-tp-dial-handle-color]="'#ffffff'"
                 [style.--ngx-mat-tp-time-box-selected-bg]="customContainerColor()"
+                [style.--ngx-mat-tp-time-box-selected-color]="'#ffffff'"
                 [style.--ngx-mat-tp-action-color]="customPrimaryColor()"
                 [style.--ngx-mat-tp-container-shape]="customRadius()"
               >
-                <div class="preview-field-box">
-                  <input
-                    type="text"
-                    class="mat-doc-input"
-                    [ngxMatTimepicker]="pickerThemed"
-                    [formControl]="time12hControl"
-                    placeholder="Custom theme preview"
-                  />
-                  <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="pickerThemed" />
-                </div>
-                <ngx-mat-timepicker #pickerThemed />
-
-                <div style="margin-top: 16px; width: 100%; display: flex; justify-content: center;">
+                <div class="themed-dialog-wrapper">
                   <ngx-mat-timepicker-dialog
                     [initialTime]="embeddedTime()"
                     [format]="'12h'"
                     orientation="auto"
+                    (timeSet)="onEmbeddedTimeSet($event)"
                   />
                 </div>
                 <span class="preview-hint">Live preview showing <code>--ngx-mat-tp-*</code> tokens applied directly in real-time.</span>

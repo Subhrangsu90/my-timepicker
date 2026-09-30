@@ -58,14 +58,27 @@ export class NgxMatTimepicker implements OnDestroy {
 
   readonly isOpen = signal<boolean>(false);
   private currentTimeValue: TimeValue | string | Date | null = null;
+  private attachedInput: { getInputValue(): string | Date | TimeValue | null } | null = null;
+
+  /**
+   * Registers an input directive associated with this timepicker.
+   */
+  registerInput(input: { getInputValue(): string | Date | TimeValue | null } | null): void {
+    this.attachedInput = input;
+  }
 
   open(initialValue?: TimeValue | string | Date | null): void {
     if (this.disabled() || this.isOpen()) {
       return;
     }
 
-    if (initialValue !== undefined) {
+    if (initialValue !== undefined && initialValue !== null) {
       this.currentTimeValue = initialValue;
+    } else if (this.attachedInput) {
+      const currentInputVal = this.attachedInput.getInputValue();
+      if (currentInputVal !== null && currentInputVal !== undefined && currentInputVal !== '') {
+        this.currentTimeValue = currentInputVal;
+      }
     }
 
     const overlayConfig = new OverlayConfig({
