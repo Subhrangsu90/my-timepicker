@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { NgxMatPeriodToggleComponent } from './period-toggle.component';
+import { NgxMatPeriodToggle } from './period-toggle';
 
-describe('NgxMatPeriodToggleComponent', () => {
-  let component: NgxMatPeriodToggleComponent;
-  let fixture: ComponentFixture<NgxMatPeriodToggleComponent>;
+describe('NgxMatPeriodToggle', () => {
+  let component: NgxMatPeriodToggle;
+  let fixture: ComponentFixture<NgxMatPeriodToggle>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [NgxMatPeriodToggleComponent],
+      imports: [NgxMatPeriodToggle],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(NgxMatPeriodToggleComponent);
+    fixture = TestBed.createComponent(NgxMatPeriodToggle);
     component = fixture.componentInstance;
     fixture.componentRef.setInput('period', 'AM');
     fixture.detectChanges();

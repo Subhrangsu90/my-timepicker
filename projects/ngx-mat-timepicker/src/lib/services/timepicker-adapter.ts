@@ -1,12 +1,12 @@
 import { inject, Injectable, LOCALE_ID } from '@angular/core';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE, MatDateFormats } from '@angular/material/core';
-import { Period, TimeFormat, TimeValue } from '../models/timepicker.models';
-import { NgxMatTimepickerIntl } from './timepicker-intl.service';
+import { Period, TimeFormat, TimeValue } from '../models/timepicker.model';
+import { NgxMatTimepickerIntl } from './timepicker-intl';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TimepickerAdapterService {
+export class TimepickerAdapter {
   private _dateAdapter = inject<DateAdapter<unknown> | null>(DateAdapter, { optional: true });
   private _matDateLocale = inject<string | null>(MAT_DATE_LOCALE, { optional: true });
   private _dateFormats = inject<MatDateFormats | null>(MAT_DATE_FORMATS, { optional: true });
@@ -260,3 +260,6 @@ export class TimepickerAdapterService {
     return d;
   }
 }
+
+/** @deprecated Use `TimepickerAdapter` instead. */
+export { TimepickerAdapter as TimepickerAdapterService };

@@ -68,7 +68,7 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
     }
   `,
 })
-export class NgxMatTimepickerToggleComponent {
+export class NgxMatTimepickerToggle {
   readonly picker = input.required<NgxMatTimepicker>({ alias: 'for' });
   readonly disabled = input<boolean>(false);
 
@@ -77,3 +77,6 @@ export class NgxMatTimepickerToggleComponent {
     this.picker().open();
   }
 }
+
+/** @deprecated Use `NgxMatTimepickerToggle` instead. */
+export { NgxMatTimepickerToggle as NgxMatTimepickerToggleComponent };

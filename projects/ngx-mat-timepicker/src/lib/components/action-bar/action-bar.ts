@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TimePickerMode } from '../../models/timepicker.models';
+import { TimePickerMode } from '../../models/timepicker.model';
 
 @Component({
   selector: 'ngx-mat-action-bar',
@@ -131,7 +131,7 @@ import { TimePickerMode } from '../../models/timepicker.models';
     }
   `,
 })
-export class NgxMatActionBarComponent {
+export class NgxMatActionBar {
   readonly mode = input<TimePickerMode>('dial');
   readonly cancelLabel = input<string>('Cancel');
   readonly okLabel = input<string>('OK');
@@ -144,3 +144,7 @@ export class NgxMatActionBarComponent {
     this.modeToggle.emit();
   }
 }
+
+/** @deprecated Use `NgxMatActionBar` instead. */
+export { NgxMatActionBar as NgxMatActionBarComponent };
+

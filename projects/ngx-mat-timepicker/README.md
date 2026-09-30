@@ -56,8 +56,8 @@ import { Component } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import {
   NgxMatTimepicker,
-  NgxMatTimepickerInputDirective,
-  NgxMatTimepickerToggleComponent,
+  NgxMatTimepickerInput,
+  NgxMatTimepickerToggle,
 } from 'ngx-mat-timepicker';
 
 @Component({
@@ -66,12 +66,12 @@ import {
   imports: [
     ReactiveFormsModule,
     NgxMatTimepicker,
-    NgxMatTimepickerInputDirective,
-    NgxMatTimepickerToggleComponent,
+    NgxMatTimepickerInput,
+    NgxMatTimepickerToggle,
   ],
-  templateUrl: './example.component.html',
+  templateUrl: './example.html',
 })
-export class ExampleComponent {
+export class Example {
   readonly timeControl = new FormControl('07:30 AM');
 }
 ```

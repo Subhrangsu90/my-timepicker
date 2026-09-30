@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   NgxMatTimepicker,
-  NgxMatTimepickerDialogComponent,
-  NgxMatTimepickerInputDirective,
+  NgxMatTimepickerDialog,
+  NgxMatTimepickerInput,
   NgxMatTimepickerIntl,
-  NgxMatTimepickerToggleComponent,
+  NgxMatTimepickerToggle,
   TimeFormat,
   TimePickerOrientation,
   TimeValue,
@@ -20,12 +20,12 @@ import {
     FormsModule,
     ReactiveFormsModule,
     NgxMatTimepicker,
-    NgxMatTimepickerInputDirective,
-    NgxMatTimepickerToggleComponent,
-    NgxMatTimepickerDialogComponent,
+    NgxMatTimepickerInput,
+    NgxMatTimepickerToggle,
+    NgxMatTimepickerDialog,
   ],
   templateUrl: './app.html',
-  styleUrls: ['./app.scss'],
+  styleUrl: './app.scss',
 })
 export class App {
   private intl = inject(NgxMatTimepickerIntl);

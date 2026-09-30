@@ -17,9 +17,9 @@ import {
   TimePickerMode,
   TimePickerOrientation,
   TimeValue,
-} from './models/timepicker.models';
-import { NgxMatTimepickerDialogComponent } from './components/ngx-mat-timepicker-dialog/ngx-mat-timepicker-dialog.component';
-import { TimepickerAdapterService } from './services/timepicker-adapter.service';
+} from './models/timepicker.model';
+import { NgxMatTimepickerDialog } from './components/ngx-mat-timepicker-dialog/ngx-mat-timepicker-dialog';
+import { TimepickerAdapter } from './services/timepicker-adapter';
 
 @Component({
   selector: 'ngx-mat-timepicker',
@@ -37,7 +37,7 @@ import { TimepickerAdapterService } from './services/timepicker-adapter.service'
 export class NgxMatTimepicker implements OnDestroy {
   private overlay = inject(Overlay);
   private viewContainerRef = inject(ViewContainerRef);
-  private adapter = inject(TimepickerAdapterService);
+  private adapter = inject(TimepickerAdapter);
 
   readonly format = input<TimeFormat>('12h');
   readonly orientation = input<TimePickerOrientation>('auto');
@@ -54,7 +54,7 @@ export class NgxMatTimepicker implements OnDestroy {
   readonly opened = output<void>();
 
   private overlayRef: OverlayRef | null = null;
-  private dialogComponentRef: ComponentRef<NgxMatTimepickerDialogComponent> | null = null;
+  private dialogComponentRef: ComponentRef<NgxMatTimepickerDialog> | null = null;
 
   readonly isOpen = signal<boolean>(false);
   private currentTimeValue: TimeValue | string | Date | null = null;
@@ -77,7 +77,7 @@ export class NgxMatTimepicker implements OnDestroy {
     });
 
     this.overlayRef = this.overlay.create(overlayConfig);
-    const portal = new ComponentPortal(NgxMatTimepickerDialogComponent, this.viewContainerRef);
+    const portal = new ComponentPortal(NgxMatTimepickerDialog, this.viewContainerRef);
     this.dialogComponentRef = this.overlayRef.attach(portal);
 
     // Bind inputs to dialog instance

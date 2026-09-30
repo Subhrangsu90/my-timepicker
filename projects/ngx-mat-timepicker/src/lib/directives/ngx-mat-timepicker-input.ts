@@ -12,8 +12,8 @@ import {
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { NgxMatTimepicker } from '../ngx-mat-timepicker';
-import { TimepickerAdapterService } from '../services/timepicker-adapter.service';
-import { TimeValue } from '../models/timepicker.models';
+import { TimepickerAdapter } from '../services/timepicker-adapter';
+import { TimeValue } from '../models/timepicker.model';
 
 @Directive({
   selector: 'input[ngxMatTimepicker]',
@@ -22,14 +22,14 @@ import { TimeValue } from '../models/timepicker.models';
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => NgxMatTimepickerInputDirective),
+      useExisting: forwardRef(() => NgxMatTimepickerInput),
       multi: true,
     },
   ],
 })
-export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnInit, OnDestroy {
+export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDestroy {
   private elementRef = inject(ElementRef<HTMLInputElement>);
-  private adapter = inject(TimepickerAdapterService);
+  private adapter = inject(TimepickerAdapter);
 
   readonly ngxMatTimepicker = input.required<NgxMatTimepicker>();
 
@@ -154,3 +154,6 @@ export class NgxMatTimepickerInputDirective implements ControlValueAccessor, OnI
     return this.parsedValue;
   }
 }
+
+/** @deprecated Use `NgxMatTimepickerInput` instead. */
+export { NgxMatTimepickerInput as NgxMatTimepickerInputDirective };

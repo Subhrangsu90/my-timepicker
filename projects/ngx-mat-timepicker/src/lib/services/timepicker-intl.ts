@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
-import { TimePickerStep } from '../models/timepicker.models';
+import { TimePickerStep } from '../models/timepicker.model';
 
 @Injectable({
   providedIn: 'root',

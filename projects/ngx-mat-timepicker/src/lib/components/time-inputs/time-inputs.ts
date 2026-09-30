@@ -10,7 +10,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Period } from '../../models/timepicker.models';
+import { Period } from '../../models/timepicker.model';
 
 @Component({
   selector: 'ngx-mat-time-inputs',
@@ -174,7 +174,7 @@ import { Period } from '../../models/timepicker.models';
     }
   `,
 })
-export class NgxMatTimeInputsComponent implements AfterViewInit {
+export class NgxMatTimeInputs implements AfterViewInit {
   readonly hourInput = viewChild<ElementRef<HTMLInputElement>>('hourInput');
   readonly minuteInput = viewChild<ElementRef<HTMLInputElement>>('minuteInput');
 
@@ -290,3 +290,6 @@ export class NgxMatTimeInputsComponent implements AfterViewInit {
     }
   }
 }
+
+/** @deprecated Use `NgxMatTimeInputs` instead. */
+export { NgxMatTimeInputs as NgxMatTimeInputsComponent };

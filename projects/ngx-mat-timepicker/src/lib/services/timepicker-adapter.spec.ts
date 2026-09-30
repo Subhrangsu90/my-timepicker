@@ -1,12 +1,12 @@
 import { TestBed } from '@angular/core/testing';
-import { TimepickerAdapterService } from './timepicker-adapter.service';
+import { TimepickerAdapter } from './timepicker-adapter';
 
-describe('TimepickerAdapterService', () => {
-  let service: TimepickerAdapterService;
+describe('TimepickerAdapter', () => {
+  let service: TimepickerAdapter;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(TimepickerAdapterService);
+    service = TestBed.inject(TimepickerAdapter);
   });
 
   it('should be created', () => {

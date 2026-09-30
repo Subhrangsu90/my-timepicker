@@ -18,15 +18,15 @@ import {
   TimePickerOrientation,
   TimePickerStep,
   TimeValue,
-} from '../../models/timepicker.models';
-import { TimepickerAdapterService } from '../../services/timepicker-adapter.service';
-import { TimepickerA11yService } from '../../services/timepicker-a11y.service';
-import { NgxMatTimepickerIntl } from '../../services/timepicker-intl.service';
-import { NgxMatTimeDisplayComponent } from '../time-display/time-display.component';
-import { NgxMatPeriodToggleComponent } from '../period-toggle/period-toggle.component';
-import { NgxMatClockDialComponent } from '../clock-dial/clock-dial.component';
-import { NgxMatTimeInputsComponent } from '../time-inputs/time-inputs.component';
-import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
+} from '../../models/timepicker.model';
+import { TimepickerAdapter } from '../../services/timepicker-adapter';
+import { TimepickerA11y } from '../../services/timepicker-a11y';
+import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
+import { NgxMatTimeDisplay } from '../time-display/time-display';
+import { NgxMatPeriodToggle } from '../period-toggle/period-toggle';
+import { NgxMatClockDial } from '../clock-dial/clock-dial';
+import { NgxMatTimeInputs } from '../time-inputs/time-inputs';
+import { NgxMatActionBar } from '../action-bar/action-bar';
 
 @Component({
   selector: 'ngx-mat-timepicker-dialog',
@@ -35,11 +35,11 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
     CommonModule,
     A11yModule,
     BidiModule,
-    NgxMatTimeDisplayComponent,
-    NgxMatPeriodToggleComponent,
-    NgxMatClockDialComponent,
-    NgxMatTimeInputsComponent,
-    NgxMatActionBarComponent,
+    NgxMatTimeDisplay,
+    NgxMatPeriodToggle,
+    NgxMatClockDial,
+    NgxMatTimeInputs,
+    NgxMatActionBar,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
@@ -235,9 +235,9 @@ import { NgxMatActionBarComponent } from '../action-bar/action-bar.component';
     }
   `,
 })
-export class NgxMatTimepickerDialogComponent implements OnInit {
-  private adapter = inject(TimepickerAdapterService);
-  private a11y = inject(TimepickerA11yService);
+export class NgxMatTimepickerDialog implements OnInit {
+  private adapter = inject(TimepickerAdapter);
+  private a11y = inject(TimepickerA11y);
   readonly intl = inject(NgxMatTimepickerIntl);
 
   readonly initialTime = input<TimeValue | string | Date | null>(null);
@@ -336,3 +336,6 @@ export class NgxMatTimepickerDialogComponent implements OnInit {
     this.dialogClosed.emit();
   }
 }
+
+/** @deprecated Use `NgxMatTimepickerDialog` instead. */
+export { NgxMatTimepickerDialog as NgxMatTimepickerDialogComponent };

@@ -11,8 +11,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ClockDialNumber, Period, TimePickerStep } from '../../models/timepicker.models';
-import { TimepickerA11yService } from '../../services/timepicker-a11y.service';
+import { ClockDialNumber, Period, TimePickerStep } from '../../models/timepicker.model';
+import { TimepickerA11y } from '../../services/timepicker-a11y';
 
 @Component({
   selector: 'ngx-mat-clock-dial',
@@ -166,8 +166,8 @@ import { TimepickerA11yService } from '../../services/timepicker-a11y.service';
     }
   `,
 })
-export class NgxMatClockDialComponent {
-  private a11y = inject(TimepickerA11yService);
+export class NgxMatClockDial {
+  private a11y = inject(TimepickerA11y);
 
   readonly dialFace = viewChild.required<ElementRef<HTMLElement>>('dialFace');
 
@@ -400,3 +400,6 @@ export class NgxMatClockDialComponent {
     }
   }
 }
+
+/** @deprecated Use `NgxMatClockDial` instead. */
+export { NgxMatClockDial as NgxMatClockDialComponent };

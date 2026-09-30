@@ -9,7 +9,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TimePickerMode, TimePickerStep } from '../../models/timepicker.models';
+import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
 
 @Component({
   selector: 'ngx-mat-time-display',
@@ -191,7 +191,7 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.models';
     }
   `,
 })
-export class NgxMatTimeDisplayComponent {
+export class NgxMatTimeDisplay {
   readonly hourInput = viewChild<ElementRef<HTMLInputElement>>('hourInput');
   readonly minuteInput = viewChild<ElementRef<HTMLInputElement>>('minuteInput');
 
@@ -478,3 +478,6 @@ export class NgxMatTimeDisplayComponent {
     }
   }
 }
+
+/** @deprecated Use `NgxMatTimeDisplay` instead. */
+export { NgxMatTimeDisplay as NgxMatTimeDisplayComponent };

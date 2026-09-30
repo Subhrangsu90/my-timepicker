@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Period } from '../../models/timepicker.models';
-import { NgxMatTimepickerIntl } from '../../services/timepicker-intl.service';
+import { Period } from '../../models/timepicker.model';
+import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
 
 @Component({
   selector: 'ngx-mat-period-toggle',
@@ -110,7 +110,7 @@ import { NgxMatTimepickerIntl } from '../../services/timepicker-intl.service';
     }
   `,
 })
-export class NgxMatPeriodToggleComponent {
+export class NgxMatPeriodToggle {
   private intl = inject(NgxMatTimepickerIntl);
 
   readonly period = input.required<Period>();
@@ -134,3 +134,7 @@ export class NgxMatPeriodToggleComponent {
     }
   }
 }
+
+/** @deprecated Use `NgxMatPeriodToggle` instead. */
+export { NgxMatPeriodToggle as NgxMatPeriodToggleComponent };
+

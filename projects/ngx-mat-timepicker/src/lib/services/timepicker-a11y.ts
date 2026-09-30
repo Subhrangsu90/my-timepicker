@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { TimePickerStep, TimeValue } from '../models/timepicker.models';
+import { TimePickerStep, TimeValue } from '../models/timepicker.model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class TimepickerA11yService {
+export class TimepickerA11y {
   private liveAnnouncer = inject(LiveAnnouncer, { optional: true });
 
   announceStep(step: TimePickerStep): void {
@@ -109,3 +109,6 @@ export class TimepickerA11yService {
     }
   }
 }
+
+/** @deprecated Use `TimepickerA11y` instead. */
+export { TimepickerA11y as TimepickerA11yService };
