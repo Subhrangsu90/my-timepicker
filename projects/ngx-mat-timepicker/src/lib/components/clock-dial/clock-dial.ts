@@ -358,11 +358,14 @@ export class NgxMatClockDial {
 
   private updateFromPointer(event: PointerEvent): void {
     const rect = this.dialFace().nativeElement.getBoundingClientRect();
-    const x = event.clientX - rect.left - 128;
-    const y = event.clientY - rect.top - 128;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const x = event.clientX - rect.left - centerX;
+    const y = event.clientY - rect.top - centerY;
 
-    // Radius from center
-    const distance = Math.hypot(x, y);
+    // Radius from center normalized to 256dp dial coordinate space
+    const scale = rect.width > 0 ? rect.width / 256 : 1;
+    const distance = Math.hypot(x, y) / scale;
 
     // Calculate angle in degrees from 12 o'clock (0..360)
     let angle = Math.atan2(y, x) * (180 / Math.PI) + 90;

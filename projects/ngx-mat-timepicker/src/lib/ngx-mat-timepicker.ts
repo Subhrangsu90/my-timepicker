@@ -184,11 +184,11 @@ export class NgxMatTimepicker implements OnDestroy {
 
     // Subscriptions
     instance.timeSet.subscribe((val: TimeValue) => {
+      const baseDate = this.currentTimeValue instanceof Date ? this.currentTimeValue : undefined;
       this.currentTimeValue = val;
       this.timeSet.emit(val);
 
       const fmt = this.adapter.normalizeFormat(this.format());
-      const baseDate = this.currentTimeValue instanceof Date ? this.currentTimeValue : undefined;
       const dateObj = this.adapter.toDate(val, fmt, baseDate);
       this.dateSet.emit(dateObj);
     });
