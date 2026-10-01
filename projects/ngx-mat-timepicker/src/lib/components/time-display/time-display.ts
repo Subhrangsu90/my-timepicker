@@ -114,8 +114,14 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
       justify-content: center;
       border-radius: 8px;
       border: 2px solid transparent;
-      background-color: var(--ngx-mat-tp-time-box-unselected-bg, #e6e0e9);
-      color: var(--ngx-mat-tp-time-box-unselected-color, #1d1b20);
+      background-color: var(
+        --ngx-mat-tp-time-box-unselected-bg,
+        var(--mat-sys-surface-container-highest, #e6e0e9)
+      );
+      color: var(
+        --ngx-mat-tp-time-box-unselected-color,
+        var(--mat-sys-on-surface, #1d1b20)
+      );
       cursor: text;
       outline: none;
       padding: 0;
@@ -127,9 +133,18 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
 
       &.selected,
       &:focus-within {
-        background-color: var(--ngx-mat-tp-time-box-selected-bg, #eaddff);
-        color: var(--ngx-mat-tp-time-box-selected-color, #21005d);
-        border-color: var(--ngx-mat-tp-dial-pin, #6750a4);
+        background-color: var(
+          --ngx-mat-tp-time-box-selected-bg,
+          var(--mat-sys-primary-container, #eaddff)
+        );
+        color: var(
+          --ngx-mat-tp-time-box-selected-color,
+          var(--mat-sys-on-primary-container, #21005d)
+        );
+        border-color: var(
+          --ngx-mat-tp-dial-pin,
+          var(--mat-sys-primary, #6750a4)
+        );
         transform: scale(1.02);
       }
     }
@@ -151,7 +166,10 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
       font-weight: 400;
       letter-spacing: -0.25px;
       color: inherit;
-      caret-color: var(--ngx-mat-tp-dial-pin, #6750a4);
+      caret-color: var(
+        --ngx-mat-tp-dial-pin,
+        var(--mat-sys-primary, #6750a4)
+      );
       padding: 0;
       margin: 0;
       box-sizing: border-box;
@@ -178,7 +196,10 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
       height: 80px;
       font-size: 57px;
       font-weight: 400;
-      color: var(--ngx-mat-tp-separator-color, #1d1b20);
+      color: var(
+        --ngx-mat-tp-separator-color,
+        var(--mat-sys-on-surface, #1d1b20)
+      );
       user-select: none;
     }
 
@@ -203,7 +224,10 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
     .time-label {
       font-size: 12px;
       line-height: 16px;
-      color: var(--ngx-mat-tp-headline-color, #49454f);
+      color: var(
+        --ngx-mat-tp-headline-color,
+        var(--mat-sys-on-surface-variant, #49454f)
+      );
       margin-top: 4px;
       user-select: none;
     }

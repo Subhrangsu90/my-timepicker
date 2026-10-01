@@ -72,14 +72,17 @@ import { TimePickerMode } from '../../models/timepicker.model';
       background: transparent;
       border: none;
       border-radius: 50%;
-      color: var(--ngx-mat-tp-action-icon, #49454f);
+      color: var(
+        --ngx-mat-tp-action-icon,
+        var(--mat-sys-on-surface-variant, #49454f)
+      );
       cursor: pointer;
       outline: none;
       padding: 0;
       transition: background-color 150ms ease, color 150ms ease, transform 100ms ease;
 
       &:hover {
-        background-color: rgba(0, 0, 0, 0.04);
+        background-color: var(--mat-sys-state-hover-state-layer-opacity, rgba(128, 128, 128, 0.08));
       }
 
       &:active {
@@ -87,7 +90,7 @@ import { TimePickerMode } from '../../models/timepicker.model';
       }
 
       &:focus-visible {
-        outline: 2px solid var(--ngx-mat-tp-dial-pin, #6750a4);
+        outline: 2px solid var(--ngx-mat-tp-dial-pin, var(--mat-sys-primary, #6750a4));
       }
     }
 
@@ -127,7 +130,10 @@ import { TimePickerMode } from '../../models/timepicker.model';
       background: transparent;
       border: none;
       border-radius: 20px;
-      color: var(--ngx-mat-tp-action-color, #6750a4);
+      color: var(
+        --ngx-mat-tp-action-color,
+        var(--mat-sys-primary, #6750a4)
+      );
       font-family: var(--mat-sys-typescale-label-large-font, 'Roboto', sans-serif);
       font-size: 14px;
       font-weight: 500;
@@ -137,7 +143,7 @@ import { TimePickerMode } from '../../models/timepicker.model';
       transition: background-color 150ms ease, transform 100ms ease;
 
       &:hover {
-        background-color: rgba(103, 80, 164, 0.08);
+        background-color: var(--mat-sys-state-hover-state-layer-opacity, rgba(103, 80, 164, 0.08));
       }
 
       &:active {
@@ -145,7 +151,7 @@ import { TimePickerMode } from '../../models/timepicker.model';
       }
 
       &:focus-visible {
-        outline: 2px solid var(--ngx-mat-tp-dial-pin, #6750a4);
+        outline: 2px solid var(--ngx-mat-tp-dial-pin, var(--mat-sys-primary, #6750a4));
       }
 
       &.ok-button {

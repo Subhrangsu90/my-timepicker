@@ -95,7 +95,10 @@ import { Period } from '../../models/timepicker.model';
       width: 96px;
       height: 80px;
       border-radius: 8px;
-      background-color: var(--ngx-mat-tp-time-box-unselected-bg, #e6e0e9);
+      background-color: var(
+        --ngx-mat-tp-time-box-unselected-bg,
+        var(--mat-sys-surface-container-highest, #e6e0e9)
+      );
       border: 2px solid transparent;
       box-sizing: border-box;
       display: flex;
@@ -104,12 +107,18 @@ import { Period } from '../../models/timepicker.model';
       transition: border-color 150ms ease, background-color 150ms ease;
 
       &:focus-within {
-        border-color: var(--ngx-mat-tp-dial-pin, #6750a4);
-        background-color: var(--ngx-mat-tp-time-box-selected-bg, #eaddff);
+        border-color: var(--ngx-mat-tp-dial-pin, var(--mat-sys-primary, #6750a4));
+        background-color: var(
+          --ngx-mat-tp-time-box-selected-bg,
+          var(--mat-sys-primary-container, #eaddff)
+        );
       }
 
       &.has-error {
-        border-color: var(--ngx-mat-tp-error-color, #b3261e) !important;
+        border-color: var(
+          --ngx-mat-tp-error-color,
+          var(--mat-sys-error, #b3261e)
+        ) !important;
       }
     }
 
@@ -127,12 +136,18 @@ import { Period } from '../../models/timepicker.model';
       font-size: 57px;
       line-height: 64px;
       font-weight: 400;
-      color: var(--ngx-mat-tp-time-box-unselected-color, #1d1b20);
+      color: var(
+        --ngx-mat-tp-time-box-unselected-color,
+        var(--mat-sys-on-surface, #1d1b20)
+      );
       outline: none;
       padding: 0;
 
       &:focus {
-        color: var(--ngx-mat-tp-time-box-selected-color, #21005d);
+        color: var(
+          --ngx-mat-tp-time-box-selected-color,
+          var(--mat-sys-on-primary-container, #21005d)
+        );
       }
     }
 
@@ -150,7 +165,10 @@ import { Period } from '../../models/timepicker.model';
       height: 80px;
       font-size: 57px;
       font-weight: 400;
-      color: var(--ngx-mat-tp-separator-color, #1d1b20);
+      color: var(
+        --ngx-mat-tp-separator-color,
+        var(--mat-sys-on-surface, #1d1b20)
+      );
       user-select: none;
     }
 
@@ -175,7 +193,10 @@ import { Period } from '../../models/timepicker.model';
     .field-label {
       font-size: 12px;
       line-height: 16px;
-      color: var(--ngx-mat-tp-headline-color, #49454f);
+      color: var(
+        --ngx-mat-tp-headline-color,
+        var(--mat-sys-on-surface-variant, #49454f)
+      );
       margin-top: 4px;
       user-select: none;
     }
@@ -186,7 +207,10 @@ import { Period } from '../../models/timepicker.model';
 
     .error-text {
       font-size: 12px;
-      color: var(--ngx-mat-tp-error-color, #b3261e);
+      color: var(
+        --ngx-mat-tp-error-color,
+        var(--mat-sys-error, #b3261e)
+      );
       margin-top: 8px;
       text-align: center;
     }

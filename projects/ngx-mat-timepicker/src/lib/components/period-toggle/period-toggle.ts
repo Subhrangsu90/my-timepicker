@@ -52,7 +52,7 @@ import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
       flex-direction: column;
       width: 52px;
       height: 80px;
-      border: 1px solid var(--ngx-mat-tp-period-border, #79747e);
+      border: 1px solid var(--ngx-mat-tp-period-border, var(--mat-sys-outline, #79747e));
       border-radius: 8px;
       overflow: hidden;
       box-sizing: border-box;
@@ -81,7 +81,10 @@ import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
       justify-content: center;
       border: none;
       background: transparent;
-      color: var(--ngx-mat-tp-period-unselected-color, #49454f);
+      color: var(
+        --ngx-mat-tp-period-unselected-color,
+        var(--mat-sys-on-surface-variant, #49454f)
+      );
       cursor: pointer;
       outline: none;
       padding: 0;
@@ -89,18 +92,24 @@ import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
                   color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &.selected {
-        background-color: var(--ngx-mat-tp-period-selected-bg, #ffd8e4);
-        color: var(--ngx-mat-tp-period-selected-color, #31111d);
+        background-color: var(
+          --ngx-mat-tp-period-selected-bg,
+          var(--mat-sys-tertiary-container, #ffd8e4)
+        );
+        color: var(
+          --ngx-mat-tp-period-selected-color,
+          var(--mat-sys-on-tertiary-container, #31111d)
+        );
       }
 
       &:focus-visible {
-        outline: 2px solid var(--ngx-mat-tp-dial-pin, #6750a4);
+        outline: 2px solid var(--ngx-mat-tp-dial-pin, var(--mat-sys-primary, #6750a4));
         outline-offset: -2px;
       }
     }
 
     .segment-divider {
-      background-color: var(--ngx-mat-tp-period-border, #79747e);
+      background-color: var(--ngx-mat-tp-period-border, var(--mat-sys-outline, #79747e));
       width: 100%;
       height: 1px;
 

@@ -1,0 +1,114 @@
+// =============================================================================
+// ngx-mat-timepicker - Material Design 3 Sass Theming API
+// =============================================================================
+@use 'sass:map';
+
+// Default light theme token values
+$light-tokens: (
+  container-bg: var(--mat-sys-surface-container-high, #ece6f0),
+  container-shape: var(--mat-sys-corner-extra-large, 28px),
+  headline-color: var(--mat-sys-on-surface-variant, #49454f),
+  
+  time-box-selected-bg: var(--mat-sys-primary-container, #eaddff),
+  time-box-selected-color: var(--mat-sys-on-primary-container, #21005d),
+  time-box-unselected-bg: var(--mat-sys-surface-container-highest, #e6e0e9),
+  time-box-unselected-color: var(--mat-sys-on-surface, #1d1b20),
+  
+  separator-color: var(--mat-sys-on-surface, #1d1b20),
+  
+  period-selected-bg: var(--mat-sys-tertiary-container, #ffd8e4),
+  period-selected-color: var(--mat-sys-on-tertiary-container, #31111d),
+  period-unselected-color: var(--mat-sys-on-surface-variant, #49454f),
+  period-border: var(--mat-sys-outline, #79747e),
+  
+  dial-bg: var(--mat-sys-surface-container-highest, #e6e0e9),
+  dial-pin: var(--mat-sys-primary, #6750a4),
+  dial-hand: var(--mat-sys-primary, #6750a4),
+  dial-handle-bg: var(--mat-sys-primary, #6750a4),
+  dial-handle-color: var(--mat-sys-on-primary, #ffffff),
+  dial-number-color: var(--mat-sys-on-surface, #1d1b20),
+  
+  action-color: var(--mat-sys-primary, #6750a4),
+  action-icon: var(--mat-sys-on-surface-variant, #49454f),
+  
+  error-color: var(--mat-sys-error, #b3261e),
+  scrim: rgba(0, 0, 0, 0.32),
+);
+
+// Default dark theme token values
+$dark-tokens: (
+  container-bg: var(--mat-sys-surface-container-high, #2b2930),
+  headline-color: var(--mat-sys-on-surface-variant, #cac4d0),
+  
+  time-box-selected-bg: var(--mat-sys-primary-container, #4f378b),
+  time-box-selected-color: var(--mat-sys-on-primary-container, #eaddff),
+  time-box-unselected-bg: var(--mat-sys-surface-container-highest, #36343b),
+  time-box-unselected-color: var(--mat-sys-on-surface, #e6e0e9),
+  
+  separator-color: var(--mat-sys-on-surface, #e6e0e9),
+  
+  period-selected-bg: var(--mat-sys-tertiary-container, #633b48),
+  period-selected-color: var(--mat-sys-on-tertiary-container, #ffd8e4),
+  period-unselected-color: var(--mat-sys-on-surface-variant, #cac4d0),
+  period-border: var(--mat-sys-outline, #938f99),
+  
+  dial-bg: var(--mat-sys-surface-container-highest, #36343b),
+  dial-pin: var(--mat-sys-primary, #d0bcff),
+  dial-hand: var(--mat-sys-primary, #d0bcff),
+  dial-handle-bg: var(--mat-sys-primary, #d0bcff),
+  dial-handle-color: var(--mat-sys-on-primary, #381e72),
+  dial-number-color: var(--mat-sys-on-surface, #e6e0e9),
+  
+  action-color: var(--mat-sys-primary, #d0bcff),
+  action-icon: var(--mat-sys-on-surface-variant, #cac4d0),
+  
+  error-color: var(--mat-sys-error, #f2b8b5),
+);
+
+/// Emits CSS Custom Properties for ngx-mat-timepicker from a token map
+@mixin tokens($tokens: ()) {
+  @each $key, $value in $tokens {
+    --ngx-mat-tp-#{$key}: #{$value};
+  }
+}
+
+/// Structural styles for dialog overlay panel and backdrop
+@mixin base() {
+  .ngx-mat-timepicker-overlay-panel {
+    max-width: calc(100vw - 24px) !important;
+    max-height: calc(100vh - 24px) !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  .cdk-overlay-dark-backdrop {
+    background: var(--ngx-mat-tp-scrim, rgba(0, 0, 0, 0.32));
+  }
+}
+
+/// Emits full Material 3 theme variables and structural styles
+@mixin theme($theme: null) {
+  :root,
+  body {
+    @include tokens($light-tokens);
+  }
+
+  .dark-theme,
+  .dark-mode,
+  .dark,
+  [data-theme='dark'],
+  body.dark-mode,
+  body.dark-theme {
+    @include tokens($dark-tokens);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme='light']):not(.light-theme):not(.light-mode) {
+      @include tokens($dark-tokens);
+    }
+  }
+
+  @include base();
+}

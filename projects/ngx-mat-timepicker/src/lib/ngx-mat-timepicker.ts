@@ -99,6 +99,12 @@ export class NgxMatTimepicker implements OnDestroy {
   readonly locale = input<string | undefined>(undefined);
 
   /**
+   * Custom CSS class or list of classes to apply to the timepicker dialog overlay panel.
+   * Useful for scoping custom themes or animations.
+   */
+  readonly panelClass = input<string | string[]>('');
+
+  /**
    * Emits the confirmed `TimeValue` object ({ hour, minute, period }) when the user accepts a time.
    */
   readonly timeSet = output<TimeValue>();
@@ -174,10 +180,20 @@ export class NgxMatTimepicker implements OnDestroy {
       }
     }
 
+    const panelClasses = ['ngx-mat-timepicker-overlay-panel'];
+    const customPanel = this.panelClass();
+    if (customPanel) {
+      if (Array.isArray(customPanel)) {
+        panelClasses.push(...customPanel);
+      } else {
+        panelClasses.push(customPanel);
+      }
+    }
+
     const overlayConfig = new OverlayConfig({
       hasBackdrop: true,
       backdropClass: 'cdk-overlay-dark-backdrop',
-      panelClass: 'ngx-mat-timepicker-overlay-panel',
+      panelClass: panelClasses,
       positionStrategy: this.overlay.position().global().centerHorizontally().centerVertically(),
       scrollStrategy: this.overlay.scrollStrategies.block(),
     });

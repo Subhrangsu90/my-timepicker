@@ -32,5 +32,20 @@
   "dependencies": {
     "tslib": "^2.3.0"
   },
+  "sass": "./_index.scss",
+  "style": "./_index.scss",
+  "exports": {
+    ".": {
+      "sass": "./_index.scss",
+      "style": "./_index.scss"
+    },
+    "./theme": {
+      "sass": "./theme/_index.scss",
+      "style": "./theme/_index.scss",
+      "default": "./theme/_index.scss"
+    },
+    "./_index.scss": "./_index.scss",
+    "./_theming.scss": "./_theming.scss"
+  },
   "sideEffects": false
 }

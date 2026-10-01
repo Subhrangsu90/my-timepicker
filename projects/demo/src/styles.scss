@@ -1,5 +1,7 @@
 @use '@angular/cdk/overlay-prebuilt.css';
-@use '../../ngx-mat-timepicker/src/lib/themes/timepicker';
+@use 'ngx-mat-timepicker' as timepicker;
+
+@include timepicker.theme();
 
 *, *::before, *::after {
   box-sizing: border-box;

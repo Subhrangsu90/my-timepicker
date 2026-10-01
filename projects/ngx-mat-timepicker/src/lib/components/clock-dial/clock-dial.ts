@@ -118,7 +118,10 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       width: 256px;
       height: 256px;
       border-radius: 50%;
-      background-color: var(--ngx-mat-tp-dial-bg, #e6e0e9);
+      background-color: var(
+        --ngx-mat-tp-dial-bg,
+        var(--mat-sys-surface-container-highest, #e6e0e9)
+      );
       cursor: pointer;
       outline: none;
       box-sizing: border-box;
@@ -131,7 +134,7 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       }
 
       &:focus-visible {
-        outline: 2px solid var(--ngx-mat-tp-dial-pin, #6750a4);
+        outline: 2px solid var(--ngx-mat-tp-dial-pin, var(--mat-sys-primary, #6750a4));
         outline-offset: 4px;
       }
     }
@@ -143,7 +146,7 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background-color: var(--ngx-mat-tp-dial-pin, #6750a4);
+      background-color: var(--ngx-mat-tp-dial-pin, var(--mat-sys-primary, #6750a4));
       z-index: 3;
       pointer-events: none;
     }
@@ -165,19 +168,19 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
     }
 
     .dial-hand-line {
-      stroke: var(--ngx-mat-tp-dial-hand, #6750a4);
+      stroke: var(--ngx-mat-tp-dial-hand, var(--mat-sys-primary, #6750a4));
       stroke-width: 2;
       transition: y2 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .dial-handle-circle {
-      fill: var(--ngx-mat-tp-dial-handle-bg, #6750a4);
+      fill: var(--ngx-mat-tp-dial-handle-bg, var(--mat-sys-primary, #6750a4));
       transition: cy 200ms cubic-bezier(0.4, 0, 0.2, 1),
                   r 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .dial-intermediate-dot {
-      fill: var(--ngx-mat-tp-dial-handle-color, #ffffff);
+      fill: var(--ngx-mat-tp-dial-handle-color, var(--mat-sys-on-primary, #ffffff));
       transition: cy 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
@@ -225,7 +228,10 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       font-family: var(--mat-sys-typescale-body-large-font, 'Roboto', sans-serif);
       font-size: 16px;
       font-weight: 500;
-      color: var(--ngx-mat-tp-dial-number-color, #1d1b20);
+      color: var(
+        --ngx-mat-tp-dial-number-color,
+        var(--mat-sys-on-surface, #1d1b20)
+      );
       z-index: 4;
       pointer-events: none;
       transition: color 150ms ease, transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -235,7 +241,10 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       }
 
       &.selected {
-        color: var(--ngx-mat-tp-dial-handle-color, #ffffff);
+        color: var(
+          --ngx-mat-tp-dial-handle-color,
+          var(--mat-sys-on-primary, #ffffff)
+        );
         transform: scale(1.08);
       }
     }

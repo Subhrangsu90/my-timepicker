@@ -158,8 +158,14 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
     }
 
     .timepicker-dialog {
-      background-color: var(--ngx-mat-tp-container-bg, #ece6f0);
-      border-radius: var(--ngx-mat-tp-container-shape, 28px);
+      background-color: var(
+        --ngx-mat-tp-container-bg,
+        var(--mat-sys-surface-container-high, #ece6f0)
+      );
+      border-radius: var(
+        --ngx-mat-tp-container-shape,
+        var(--mat-sys-corner-extra-large, 28px)
+      );
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14), 0 4px 6px rgba(0, 0, 0, 0.08);
       width: 328px;
       max-width: calc(100vw - 24px);
@@ -243,7 +249,10 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
       line-height: 20px;
       font-weight: 500;
       letter-spacing: 0.1px;
-      color: var(--ngx-mat-tp-headline-color, #49454f);
+      color: var(
+        --ngx-mat-tp-headline-color,
+        var(--mat-sys-on-surface-variant, #49454f)
+      );
       user-select: none;
     }
 
