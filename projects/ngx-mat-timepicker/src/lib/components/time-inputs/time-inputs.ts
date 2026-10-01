@@ -154,6 +154,24 @@ import { Period } from '../../models/timepicker.model';
       user-select: none;
     }
 
+    @media (max-width: 350px) {
+      .input-box-wrapper {
+        width: 76px;
+        height: 64px;
+      }
+      .is-24h .input-box-wrapper {
+        width: 90px;
+      }
+      .time-input {
+        font-size: 40px;
+        line-height: 48px;
+      }
+      .colon {
+        height: 64px;
+        font-size: 40px;
+      }
+    }
+
     .field-label {
       font-size: 12px;
       line-height: 16px;

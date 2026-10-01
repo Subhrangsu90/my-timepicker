@@ -6,6 +6,7 @@ import {
   ElementRef,
   inject,
   input,
+  linkedSignal,
   output,
   signal,
   viewChild,
@@ -23,6 +24,7 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
     <div
       #dialFace
       class="clock-dial"
+      [class.is-dragging]="isDragging()"
       role="slider"
       tabindex="0"
       [attr.aria-label]="step() === 'hour' ? 'Hour picker' : 'Minute picker'"
@@ -39,45 +41,68 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       <!-- Center Pin -->
       <div class="dial-center-pin"></div>
 
-      <!-- SVG Hand Line and Handle -->
+      <!-- SVG Hand Line and Handle Rotating Along Circle -->
       <svg class="dial-hand-svg" viewBox="0 0 256 256">
-        <!-- Connecting Line -->
-        <line
-          x1="128"
-          y1="128"
-          [attr.x2]="selectedCoord().x"
-          [attr.y2]="selectedCoord().y"
-          class="dial-hand-line"
-        />
-        <!-- Handle Circle -->
-        <circle
-          [attr.cx]="selectedCoord().x"
-          [attr.cy]="selectedCoord().y"
-          [attr.r]="isInnerSelected() ? 19 : 24"
-          class="dial-handle-circle"
-        />
-        <!-- Small dot in handle center for non-marked minute steps -->
-        @if (step() === 'minute' && isIntermediateMinute()) {
-          <circle
-            [attr.cx]="selectedCoord().x"
-            [attr.cy]="selectedCoord().y"
-            r="3"
-            class="dial-intermediate-dot"
+        <g
+          class="dial-hand-group"
+          [style.transform]="'rotate(' + animatedAngle() + 'deg)'"
+          style="transform-origin: 128px 128px;"
+        >
+          <!-- Connecting Line pointing vertically upwards from center (128, 128) -->
+          <line
+            x1="128"
+            y1="128"
+            x2="128"
+            [attr.y2]="128 - handRadius()"
+            class="dial-hand-line"
           />
-        }
+          <!-- Handle Circle -->
+          <circle
+            cx="128"
+            [attr.cy]="128 - handRadius()"
+            [attr.r]="isInnerSelected() ? 19 : 24"
+            class="dial-handle-circle"
+          />
+          <!-- Small dot in handle center for non-marked minute steps -->
+          @if (step() === 'minute' && isIntermediateMinute()) {
+            <circle
+              cx="128"
+              [attr.cy]="128 - handRadius()"
+              r="3"
+              class="dial-intermediate-dot"
+            />
+          }
+        </g>
       </svg>
 
-      <!-- Dial Numbers -->
-      @for (item of dialNumbers(); track item.value + '-' + (item.isInner ? 'in' : 'out')) {
-        <span
-          class="dial-number"
-          [class.inner-ring]="item.isInner"
-          [class.selected]="item.value === currentVal() && (item.isInner ? isInnerSelected() : !isInnerSelected())"
-          [style.left.px]="item.x"
-          [style.top.px]="item.y"
-        >
-          {{ item.display }}
-        </span>
+      <!-- Dial Numbers Container with step change animation -->
+      @if (step() === 'hour') {
+        <div class="dial-numbers-group" animate.enter="dial-numbers-enter">
+          @for (item of dialNumbers(); track item.value + '-' + (item.isInner ? 'in' : 'out')) {
+            <span
+              class="dial-number"
+              [class.inner-ring]="item.isInner"
+              [class.selected]="item.value === currentVal() && (item.isInner ? isInnerSelected() : !isInnerSelected())"
+              [style.left.px]="item.x"
+              [style.top.px]="item.y"
+            >
+              {{ item.display }}
+            </span>
+          }
+        </div>
+      } @else {
+        <div class="dial-numbers-group" animate.enter="dial-numbers-enter">
+          @for (item of dialNumbers(); track item.value) {
+            <span
+              class="dial-number"
+              [class.selected]="item.value === currentVal()"
+              [style.left.px]="item.x"
+              [style.top.px]="item.y"
+            >
+              {{ item.display }}
+            </span>
+          }
+        </div>
       }
     </div>
   `,
@@ -97,6 +122,13 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       cursor: pointer;
       outline: none;
       box-sizing: border-box;
+      transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
+      @media (max-width: 350px) {
+        transform: scale(0.88);
+        transform-origin: center center;
+        margin: -14px 0;
+      }
 
       &:focus-visible {
         outline: 2px solid var(--ngx-mat-tp-dial-pin, #6750a4);
@@ -126,17 +158,59 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       pointer-events: none;
     }
 
+    .dial-hand-group {
+      transform-origin: 128px 128px;
+      transform-box: view-box;
+      transition: transform 260ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
     .dial-hand-line {
       stroke: var(--ngx-mat-tp-dial-hand, #6750a4);
       stroke-width: 2;
+      transition: y2 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .dial-handle-circle {
       fill: var(--ngx-mat-tp-dial-handle-bg, #6750a4);
+      transition: cy 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                  r 200ms cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .dial-intermediate-dot {
       fill: var(--ngx-mat-tp-dial-handle-color, #ffffff);
+      transition: cy 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Zero-latency response when actively dragging */
+    .clock-dial.is-dragging .dial-hand-group,
+    .clock-dial.is-dragging .dial-hand-line,
+    .clock-dial.is-dragging .dial-handle-circle,
+    .clock-dial.is-dragging .dial-intermediate-dot {
+      transition: none !important;
+    }
+
+    .dial-numbers-group {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+
+    .dial-numbers-enter {
+      animation: dial-fade-scale 220ms cubic-bezier(0.05, 0.7, 0.1, 1);
+    }
+
+    @keyframes dial-fade-scale {
+      from {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .dial-number {
@@ -154,7 +228,7 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
       color: var(--ngx-mat-tp-dial-number-color, #1d1b20);
       z-index: 4;
       pointer-events: none;
-      transition: color 150ms ease;
+      transition: color 150ms ease, transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &.inner-ring {
         font-size: 14px;
@@ -162,6 +236,7 @@ import { TimepickerA11y } from '../../services/timepicker-a11y';
 
       &.selected {
         color: var(--ngx-mat-tp-dial-handle-color, #ffffff);
+        transform: scale(1.08);
       }
     }
   `,
@@ -281,30 +356,37 @@ export class NgxMatClockDial {
     return numbers;
   });
 
-  readonly selectedCoord = computed<{ x: number; y: number }>(() => {
-    const center = 128;
-    const outerRadius = 100;
-    const innerRadius = 68;
-
+  readonly handRadius = computed(() => {
     if (this.step() === 'hour') {
       const h = this.hour();
       const isInner = this.is24Hour() && (h === 0 || (h >= 13 && h <= 23));
-      const radius = isInner ? innerRadius : outerRadius;
-      const angle = (h % 12) * 30;
-      const rad = (angle * Math.PI) / 180;
-      return {
-        x: center + radius * Math.sin(rad),
-        y: center - radius * Math.cos(rad),
-      };
-    } else {
-      const m = this.minute();
-      const angle = m * 6;
-      const rad = (angle * Math.PI) / 180;
-      return {
-        x: center + outerRadius * Math.sin(rad),
-        y: center - outerRadius * Math.cos(rad),
-      };
+      return isInner ? 68 : 100;
     }
+    return 100;
+  });
+
+  readonly targetAngle = computed(() => {
+    if (this.step() === 'hour') {
+      return (this.hour() % 12) * 30;
+    }
+    return this.minute() * 6;
+  });
+
+  readonly animatedAngle = linkedSignal<number, number>({
+    source: this.targetAngle,
+    computation: (newTarget, previous) => {
+      if (!previous) {
+        return newTarget;
+      }
+      const prevAngle = previous.value;
+      let diff = (newTarget - prevAngle) % 360;
+      if (diff > 180) {
+        diff -= 360;
+      } else if (diff < -180) {
+        diff += 360;
+      }
+      return prevAngle + diff;
+    },
   });
 
   onPointerDown(event: PointerEvent): void {

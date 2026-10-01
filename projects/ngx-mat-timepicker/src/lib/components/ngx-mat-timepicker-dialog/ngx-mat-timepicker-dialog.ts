@@ -19,6 +19,8 @@ import {
   TimePickerStep,
   TimeValue,
 } from '../../models/timepicker.model';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TimepickerAdapter } from '../../services/timepicker-adapter';
 import { TimepickerA11y } from '../../services/timepicker-a11y';
 import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
@@ -46,6 +48,7 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
     <div
       class="timepicker-dialog"
       [class.horizontal-layout]="isLandscape()"
+      animate.enter="dialog-enter-anim"
       cdkTrapFocus
       cdkTrapFocusAutoCapture
       role="dialog"
@@ -66,7 +69,7 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
         <div class="display-column" [class.horizontal-display-col]="isLandscape()">
           <!-- Dial Mode: Time Display -->
           @if (mode() === 'dial') {
-            <div class="display-and-period" [class.horizontal-period-below]="isLandscape()">
+            <div class="display-and-period" [class.horizontal-period-below]="isLandscape()" animate.enter="mode-switch-enter">
               <ngx-mat-time-display
                 [hour]="currentHour()"
                 [minute]="currentMinute()"
@@ -95,7 +98,7 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
             </div>
           } @else {
             <!-- Input Mode: Interactive Inputs with Period Selector -->
-            <div class="inputs-and-period" [class.horizontal-period-below]="isLandscape()">
+            <div class="inputs-and-period" [class.horizontal-period-below]="isLandscape()" animate.enter="mode-switch-enter">
               <ngx-mat-time-inputs
                 [hour]="currentHour()"
                 [minute]="currentMinute()"
@@ -122,7 +125,7 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
 
         <!-- Right / Bottom Area: Clock Dial (only in Dial mode) -->
         @if (mode() === 'dial') {
-          <div class="dial-column">
+          <div class="dial-column" animate.enter="mode-switch-enter">
             <ngx-mat-clock-dial
               [step]="activeStep()"
               [hour]="currentHour()"
@@ -159,14 +162,74 @@ import { NgxMatActionBar } from '../action-bar/action-bar';
       border-radius: var(--ngx-mat-tp-container-shape, 28px);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.14), 0 4px 6px rgba(0, 0, 0, 0.08);
       width: 328px;
+      max-width: calc(100vw - 24px);
+      max-height: calc(100vh - 24px);
       padding: 0;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
-      overflow: hidden;
+      overflow-x: hidden;
+      overflow-y: auto;
+      transition: width 250ms cubic-bezier(0.4, 0, 0.2, 1),
+                  background-color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &.horizontal-layout {
         width: 568px;
+        max-width: calc(100vw - 24px);
+      }
+    }
+
+    @media (max-width: 360px) {
+      .timepicker-dialog {
+        border-radius: 20px;
+      }
+      .dialog-header {
+        padding: 16px 16px 12px 16px;
+      }
+      .dialog-content {
+        padding: 0 12px 12px 12px;
+      }
+    }
+
+    @media (max-height: 520px) {
+      .dialog-header {
+        padding: 12px 16px 8px 16px;
+      }
+      .dialog-content {
+        padding: 0 16px 8px 16px;
+      }
+      .display-column {
+        margin-bottom: 12px;
+      }
+    }
+
+    .dialog-enter-anim {
+      animation: dialog-pop 250ms cubic-bezier(0.05, 0.7, 0.1, 1);
+    }
+
+    @keyframes dialog-pop {
+      from {
+        opacity: 0;
+        transform: scale(0.92);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .mode-switch-enter {
+      animation: mode-fade-in 200ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes mode-fade-in {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
 
@@ -340,6 +403,20 @@ export class NgxMatTimepickerDialog implements OnInit {
     return this.adapter.getPeriodLabels(this.locale());
   });
 
+  private breakpointObserver = inject(BreakpointObserver, { optional: true });
+  private isLandscapeMedia = signal(false);
+
+  constructor() {
+    if (this.breakpointObserver) {
+      this.breakpointObserver
+        .observe(['(min-width: 600px) and (orientation: landscape)'])
+        .pipe(takeUntilDestroyed())
+        .subscribe((state) => {
+          this.isLandscapeMedia.set(state.matches);
+        });
+    }
+  }
+
   /**
    * Computed boolean indicating whether the landscape horizontal layout is active.
    */
@@ -347,10 +424,7 @@ export class NgxMatTimepickerDialog implements OnInit {
     const ori = this.orientation();
     if (ori === 'horizontal') return true;
     if (ori === 'vertical') return false;
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      return window.matchMedia('(min-width: 600px) and (orientation: landscape)').matches;
-    }
-    return false;
+    return this.isLandscapeMedia();
   });
 
   /**

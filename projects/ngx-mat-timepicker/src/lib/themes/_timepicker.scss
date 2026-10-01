@@ -57,3 +57,16 @@
   
   --ngx-mat-tp-error-color: var(--mat-sys-error, #f2b8b5);
 }
+
+.ngx-mat-timepicker-overlay-panel {
+  max-width: calc(100vw - 24px) !important;
+  max-height: calc(100vh - 24px) !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+}
+
+.cdk-overlay-dark-backdrop {
+  background: var(--ngx-mat-tp-scrim, rgba(0, 0, 0, 0.32));
+}

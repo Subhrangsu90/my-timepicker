@@ -120,13 +120,15 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
       box-sizing: border-box;
       transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
                   border-color 150ms cubic-bezier(0.4, 0, 0.2, 1),
-                  color 150ms cubic-bezier(0.4, 0, 0.2, 1);
+                  color 150ms cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
       &.selected,
       &:focus-within {
         background-color: var(--ngx-mat-tp-time-box-selected-bg, #eaddff);
         color: var(--ngx-mat-tp-time-box-selected-color, #21005d);
         border-color: var(--ngx-mat-tp-dial-pin, #6750a4);
+        transform: scale(1.02);
       }
     }
 
@@ -176,6 +178,24 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
       font-weight: 400;
       color: var(--ngx-mat-tp-separator-color, #1d1b20);
       user-select: none;
+    }
+
+    @media (max-width: 350px) {
+      .time-box {
+        width: 76px;
+        height: 64px;
+      }
+      .is-24h .time-box {
+        width: 90px;
+      }
+      .time-input {
+        font-size: 40px;
+        line-height: 48px;
+      }
+      .time-separator {
+        height: 64px;
+        font-size: 40px;
+      }
     }
 
     .time-label {

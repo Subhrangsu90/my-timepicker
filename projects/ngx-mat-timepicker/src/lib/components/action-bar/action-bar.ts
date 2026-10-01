@@ -20,7 +20,7 @@ import { TimePickerMode } from '../../models/timepicker.model';
       >
         @if (mode() === 'dial') {
           <!-- Keyboard Icon -->
-          <svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="action-svg" animate.enter="icon-pop" viewBox="0 0 24 24" aria-hidden="true">
             <path
               fill="currentColor"
               d="M20 5H4c-1.1 0-1.99.9-1.99 2L2 17c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-9 3h2v2h-2V8zm0 3h2v2h-2v-2zM8 8h2v2H8V8zm0 3h2v2H8v-2zm-1 2H5v-2h2v2zm0-3H5V8h2v2zm9 7H8v-2h8v2zm0-4h-2v-2h2v2zm0-3h-2V8h2v2zm3 3h-2v-2h2v2zm0-3h-2V8h2v2z"
@@ -28,7 +28,7 @@ import { TimePickerMode } from '../../models/timepicker.model';
           </svg>
         } @else {
           <!-- Clock / Schedule Icon -->
-          <svg class="action-svg" viewBox="0 0 24 24" aria-hidden="true">
+          <svg class="action-svg" animate.enter="icon-pop" viewBox="0 0 24 24" aria-hidden="true">
             <path
               fill="currentColor"
               d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"
@@ -76,10 +76,14 @@ import { TimePickerMode } from '../../models/timepicker.model';
       cursor: pointer;
       outline: none;
       padding: 0;
-      transition: background-color 150ms ease, color 150ms ease;
+      transition: background-color 150ms ease, color 150ms ease, transform 100ms ease;
 
       &:hover {
         background-color: rgba(0, 0, 0, 0.04);
+      }
+
+      &:active {
+        transform: scale(0.92);
       }
 
       &:focus-visible {
@@ -90,6 +94,21 @@ import { TimePickerMode } from '../../models/timepicker.model';
     .action-svg {
       width: 24px;
       height: 24px;
+    }
+
+    .icon-pop {
+      animation: icon-flip-in 200ms cubic-bezier(0.05, 0.7, 0.1, 1);
+    }
+
+    @keyframes icon-flip-in {
+      from {
+        opacity: 0;
+        transform: rotate(-45deg) scale(0.75);
+      }
+      to {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+      }
     }
 
     .buttons-group {
@@ -115,10 +134,14 @@ import { TimePickerMode } from '../../models/timepicker.model';
       letter-spacing: 0.1px;
       cursor: pointer;
       outline: none;
-      transition: background-color 150ms ease;
+      transition: background-color 150ms ease, transform 100ms ease;
 
       &:hover {
         background-color: rgba(103, 80, 164, 0.08);
+      }
+
+      &:active {
+        transform: scale(0.96);
       }
 
       &:focus-visible {

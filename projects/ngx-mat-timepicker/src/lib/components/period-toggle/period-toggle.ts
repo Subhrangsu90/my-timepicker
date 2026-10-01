@@ -62,6 +62,16 @@ import { NgxMatTimepickerIntl } from '../../services/timepicker-intl';
         width: 216px;
         height: 40px;
       }
+
+      @media (max-width: 350px) {
+        width: 44px;
+        height: 64px;
+
+        &.horizontal {
+          width: 176px;
+          height: 36px;
+        }
+      }
     }
 
     .period-segment {
