@@ -4,11 +4,13 @@ import {
   computed,
   effect,
   ElementRef,
+  inject,
   input,
+  OnDestroy,
   output,
   viewChild,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
 
 @Component({
@@ -211,7 +213,9 @@ import { TimePickerMode, TimePickerStep } from '../../models/timepicker.model';
     }
   `,
 })
-export class NgxMatTimeDisplay {
+export class NgxMatTimeDisplay implements OnDestroy {
+  private document = inject(DOCUMENT);
+
   readonly hourInput = viewChild<ElementRef<HTMLInputElement>>('hourInput');
   readonly minuteInput = viewChild<ElementRef<HTMLInputElement>>('minuteInput');
 
@@ -263,18 +267,25 @@ export class NgxMatTimeDisplay {
       const step = this.activeStep();
       if (step === 'minute') {
         const el = this.minuteInput()?.nativeElement;
-        if (el && document.activeElement === this.hourInput()?.nativeElement) {
+        if (el && this.document?.activeElement === this.hourInput()?.nativeElement) {
           el.focus();
           el.select();
         }
       } else if (step === 'hour') {
         const el = this.hourInput()?.nativeElement;
-        if (el && document.activeElement === this.minuteInput()?.nativeElement) {
+        if (el && this.document?.activeElement === this.minuteInput()?.nativeElement) {
           el.focus();
           el.select();
         }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    if (this.autoAdvanceTimer) {
+      clearTimeout(this.autoAdvanceTimer);
+      this.autoAdvanceTimer = null;
+    }
   }
 
   onBoxClick(step: TimePickerStep): void {

@@ -18,7 +18,7 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
     <button
       type="button"
       class="timepicker-toggle-button"
-      [disabled]="disabled() || picker().disabled()"
+      [disabled]="disabled() || picker().disabled() || picker().isAttachedInputDisabled()"
       (click)="onClick($event)"
       aria-label="Open time picker"
     >

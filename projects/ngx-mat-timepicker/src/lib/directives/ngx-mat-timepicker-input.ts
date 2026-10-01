@@ -93,6 +93,10 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
         this.onChange(formatted);
       }
       this.timeChange.emit(formatted);
+
+      // Dispatch native input & change events for Angular Signal Forms ([formField])
+      this.elementRef.nativeElement.dispatchEvent(new Event('input', { bubbles: true }));
+      this.elementRef.nativeElement.dispatchEvent(new Event('change', { bubbles: true }));
     });
   }
 
@@ -210,12 +214,22 @@ export class NgxMatTimepickerInput implements ControlValueAccessor, OnInit, OnDe
     this.onTouched = fn;
   }
 
+  private _isDisabled = false;
+
   /**
    * Disables or enables the native `<input>` element when the form control status changes.
    * @param isDisabled Whether the control is disabled.
    */
   setDisabledState(isDisabled: boolean): void {
+    this._isDisabled = isDisabled;
     this.elementRef.nativeElement.disabled = isDisabled;
+  }
+
+  /**
+   * Returns whether the input directive is currently disabled.
+   */
+  isDisabled(): boolean {
+    return this._isDisabled || this.elementRef.nativeElement.disabled;
   }
 
   /**

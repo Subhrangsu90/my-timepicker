@@ -128,15 +128,30 @@ export class NgxMatTimepicker implements OnDestroy {
   readonly isOpen = signal<boolean>(false);
 
   private currentTimeValue: TimeValue | string | Date | null = null;
-  private attachedInput: { getInputValue(): string | Date | TimeValue | null } | null = null;
+  private attachedInput: {
+    getInputValue(): string | Date | TimeValue | null;
+    isDisabled?(): boolean;
+  } | null = null;
 
   /**
    * Registers an input directive associated with this timepicker.
    * Called automatically by `NgxMatTimepickerInput`.
    * @param input The input directive instance or null when unregistering.
    */
-  registerInput(input: { getInputValue(): string | Date | TimeValue | null } | null): void {
+  registerInput(
+    input: {
+      getInputValue(): string | Date | TimeValue | null;
+      isDisabled?(): boolean;
+    } | null
+  ): void {
     this.attachedInput = input;
+  }
+
+  /**
+   * Returns whether the attached input directive is disabled.
+   */
+  isAttachedInputDisabled(): boolean {
+    return this.attachedInput?.isDisabled?.() ?? false;
   }
 
   /**
@@ -146,7 +161,7 @@ export class NgxMatTimepicker implements OnDestroy {
    * @param initialValue Optional initial time to display in the dialog.
    */
   open(initialValue?: TimeValue | string | Date | null): void {
-    if (this.disabled() || this.isOpen()) {
+    if (this.disabled() || this.isOpen() || this.isAttachedInputDisabled()) {
       return;
     }
 

@@ -1,6 +1,9 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
   "dest": "../../dist/ngx-mat-timepicker",
+  "assets": [
+    "src/lib/themes"
+  ],
   "lib": {
     "entryFile": "src/public-api.ts"
   }
