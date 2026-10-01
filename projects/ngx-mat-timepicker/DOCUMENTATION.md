@@ -8,30 +8,35 @@ An enterprise-grade, accessible **Material Design 3 (M3) Time Picker** for Angul
 1. [Overview](#1-overview)
 2. [Installation & Setup](#2-installation--setup)
 3. [Quick Start](#3-quick-start)
+   - [Angular Signal Forms (`@angular/forms/signals`)](#angular-signal-forms-angularformssignals)
+   - [Angular Material `<mat-form-field>` Integration](#integration-with-angular-material-mat-form-field)
+   - [Reactive Forms (`FormControl`)](#reactive-forms-formcontrol)
 4. [API Reference](#4-api-reference)
-   - [NgxMatTimepicker (`<ngx-mat-timepicker>`)](#ngx-mat-timepicker)
-   - [NgxMatTimepickerInputDirective (`input[ngxMatTimepicker]`)](#ngxmattimepickerinputdirective)
-   - [NgxMatTimepickerToggleComponent (`<ngx-mat-timepicker-toggle>`)](#ngxmattimepickertogglecomponent)
-   - [NgxMatTimepickerDialogComponent (`<ngx-mat-timepicker-dialog>`)](#ngxmattimepickerdialogcomponent)
-   - [Services](#services)
+   - [NgxMatTimepicker (`<ngx-mat-timepicker>`)](#ngxmattimepicker)
+   - [NgxMatTimepickerInput (`input[ngxMatTimepicker]`)](#ngxmattimepickerinput)
+   - [NgxMatTimepickerToggle (`<ngx-mat-timepicker-toggle>`)](#ngxmattimepickertoggle)
+   - [NgxMatTimepickerDialog (`<ngx-mat-timepicker-dialog>`)](#ngxmattimepickerdialog)
+   - [Services & i18n](#services--internationalization)
    - [TypeScript Interfaces & Types](#typescript-interfaces--types)
 5. [Layouts & Formats](#5-layouts--formats)
    - [12-Hour vs. 24-Hour Modes](#12-hour-vs-24-hour-modes)
    - [Vertical vs. Horizontal Orientations](#vertical-vs-horizontal-orientations)
-   - [Dial Mode vs. Text Input Mode](#dial-mode-vs-text-input-mode)
+   - [Simultaneous Dial & Keyboard Input](#simultaneous-keyboard--touch-interaction)
 6. [Accessibility & Keyboard Navigation](#6-accessibility--keyboard-navigation)
-7. [Theming & CSS Variables](#7-theming--css-variables)
+7. [Theming & Sass Tokens](#7-theming--sass-tokens)
 8. [Code Recipes & Advanced Examples](#8-code-recipes--advanced-examples)
 
 ---
 
 ## 1. Overview
 
-The `ngx-mat-timepicker` library provides a native Angular implementation of the Material 3 Time Picker component:
+The `ngx-mat-timepicker` library provides a modern Angular Material 3 implementation of the Time Picker component:
 - **100% Material 3 Geometry**: Standard `256dp` clock dial, `48dp` selector handle, `8dp` center pin, `2dp` arm line, and `28dp` (`corner-extra-large`) dialog corners.
 - **Dual Modality**: Smooth drag-and-snap analog clock dial and accessible fallback numeric text fields.
+- **Angular Signal Forms Support**: First-class support for `@angular/forms/signals` with `[formField]`, automatically dispatching native `input` and `change` events upon selection to keep signals in sync.
 - **Signal-Powered Reactivity**: Built with Angular Signals (`signal()`, `computed()`, `input()`, `output()`) and modern control flow (`@if`, `@for`, `@switch`).
-- **Angular CDK Powered**: Utilizes `@angular/cdk/overlay` for modal backdrop and screen position strategy, `@angular/cdk/a11y` for focus trapping (`cdkTrapFocus`) and live screen reader updates (`LiveAnnouncer`).
+- **Angular CDK Powered**: Utilizes `@angular/cdk/overlay` for modal backdrop and screen positioning, `@angular/cdk/a11y` for focus trapping (`cdkTrapFocus`) and live screen reader updates (`LiveAnnouncer`).
+- **Professional Sass Theming**: Clean Angular Material-style Sass module architecture (`@use 'ngx-mat-timepicker' as timepicker;`).
 
 ---
 
@@ -39,15 +44,21 @@ The `ngx-mat-timepicker` library provides a native Angular implementation of the
 
 ### 1. Install Dependencies
 ```bash
-npm install ngx-mat-timepicker @angular/cdk @angular/forms @angular/animations
+npm install ngx-mat-timepicker @angular/cdk
 ```
 
-### 2. Include CDK Overlay Styles
+### 2. Include CDK Overlay & Timepicker Theme Styles
 In your global stylesheet (`src/styles.scss`):
 ```scss
-@use '@angular/cdk/overlay-prebuilt.css';
-@use 'ngx-mat-timepicker/themes/timepicker';
+@use '@angular/material' as mat;
+@use 'ngx-mat-timepicker' as timepicker;
+
+// Include default Material 3 timepicker styles
+@include timepicker.theme();
 ```
+
+> [!NOTE]
+> If you are not using `@angular/material` in your project, ensure `@angular/cdk/overlay-prebuilt.css` is imported in `styles.scss` so overlay backdrop and panel styles render properly.
 
 ### 3. Provide Async Animations
 In your `app.config.ts`:
@@ -66,58 +77,64 @@ export const appConfig: ApplicationConfig = {
 
 ## 3. Quick Start
 
-### Standalone Component Integration
+### Angular Signal Forms (`@angular/forms/signals`)
+
+The timepicker input dispatches native `input` and `change` DOM events upon user selection or keyboard entry, providing seamless two-way reactivity with Angular Signal Forms:
+
+```html
+<mat-form-field appearance="outline">
+  <mat-label>Launch time</mat-label>
+  <input
+    matInput
+    [formField]="bookingForm.launchTime"
+    [ngxMatTimepicker]="timePicker"
+    placeholder="Select launch time"
+  />
+  <ngx-mat-timepicker-toggle matIconSuffix [for]="timePicker" />
+  <ngx-mat-timepicker #timePicker />
+</mat-form-field>
+
+@if (bookingForm.launchTime().touched() && bookingForm.launchTime().errors().length) {
+  <span class="error-msg">
+    {{ bookingForm.launchTime().errors()[0].message }}
+  </span>
+}
+```
 
 ```typescript
-import { Component } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, signal } from '@angular/core';
+import { form, FormField, required } from '@angular/forms/signals';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import {
   NgxMatTimepicker,
-  NgxMatTimepickerInputDirective,
-  NgxMatTimepickerToggleComponent,
+  NgxMatTimepickerInput,
+  NgxMatTimepickerToggle,
 } from 'ngx-mat-timepicker';
 
 @Component({
-  selector: 'app-time-demo',
+  selector: 'app-booking',
   standalone: true,
   imports: [
-    ReactiveFormsModule,
+    FormField,
+    MatFormFieldModule,
+    MatInputModule,
     NgxMatTimepicker,
-    NgxMatTimepickerInputDirective,
-    NgxMatTimepickerToggleComponent,
+    NgxMatTimepickerInput,
+    NgxMatTimepickerToggle,
   ],
-  template: `
-    <div class="time-field-wrapper">
-      <input
-        type="text"
-        [ngxMatTimepicker]="picker"
-        [formControl]="meetingTime"
-        placeholder="Select time"
-      />
-      <ngx-mat-timepicker-toggle [for]="picker" />
-      <ngx-mat-timepicker #picker [format]="12" />
-    </div>
-  `,
-  styles: `
-    .time-field-wrapper {
-      display: inline-flex;
-      align-items: center;
-      border: 1px solid #79747e;
-      border-radius: 8px;
-      padding: 0 8px;
-    }
-    input {
-      border: none;
-      outline: none;
-      height: 48px;
-      font-size: 16px;
-    }
-  `,
+  templateUrl: './booking.html',
 })
-export class TimeDemoComponent {
-  readonly meetingTime = new FormControl('07:00 AM');
+export class BookingComponent {
+  readonly model = signal({ launchTime: '08:30 AM' });
+
+  readonly bookingForm = form(this.model, (schema) => {
+    required(schema.launchTime, { message: 'Launch time is required' });
+  });
 }
 ```
+
+---
 
 ### Integration with Angular Material `<mat-form-field>`
 
@@ -139,8 +156,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {
   NgxMatTimepicker,
-  NgxMatTimepickerInputDirective,
-  NgxMatTimepickerToggleComponent,
+  NgxMatTimepickerInput,
+  NgxMatTimepickerToggle,
 } from 'ngx-mat-timepicker';
 
 @Component({
@@ -150,23 +167,46 @@ import {
     MatFormFieldModule,
     MatInputModule,
     NgxMatTimepicker,
-    NgxMatTimepickerInputDirective,
-    NgxMatTimepickerToggleComponent,
+    NgxMatTimepickerInput,
+    NgxMatTimepickerToggle,
   ],
-  template: `...`,
+  templateUrl: './time-field.html',
 })
-export class MyComponent {
+export class TimeFieldComponent {
   readonly meetingTime = new FormControl('07:00 AM');
 }
+```
+
+> [!IMPORTANT]
+> **Always apply `matIconSuffix`**: Inside `<mat-form-field>`, custom components like `<ngx-mat-timepicker-toggle>` will project into the `<div class="mat-mdc-form-field-infix">` alongside the input unless decorated with `matIconSuffix` or `matSuffix`. Omitting `matIconSuffix` stretches the form field outline vertically and pushes the toggle underneath the text.
+
+---
+
+### Reactive Forms (`FormControl`)
+
+```html
+<div class="time-field-wrapper">
+  <input
+    type="text"
+    [ngxMatTimepicker]="picker"
+    [formControl]="meetingTime"
+    placeholder="Select time"
+  />
+  <ngx-mat-timepicker-toggle [for]="picker" />
+  <ngx-mat-timepicker #picker [format]="12" />
+</div>
 ```
 
 ---
 
 ## 4. API Reference
 
-### `<ngx-mat-timepicker>`
+### `NgxMatTimepicker`
 
-The orchestrator component that controls the dialog overlay.
+The popup component that orchestrates the dialog overlay and clock presentation.
+
+- **Selector**: `ngx-mat-timepicker`
+- **Export As**: `ngxMatTimepicker`
 
 #### Inputs
 | Property | Type | Default | Description |
@@ -178,6 +218,8 @@ The orchestrator component that controls the dialog overlay.
 | `cancelLabel` | `string` | `'Cancel'` | Custom label for dismiss button. |
 | `okLabel` | `string` | `'OK'` | Custom label for confirm button. |
 | `disabled` | `boolean` | `false` | When true, prevents opening the dialog. |
+| `locale` | `string` | `'en-US'` | Active locale string for number formatting and localization. |
+| `panelClass` | `string \| string[]` | `''` | Extra CSS class or list of classes to append to the overlay dialog panel. |
 
 #### Outputs
 | Event | Type | Description |
@@ -195,45 +237,47 @@ The orchestrator component that controls the dialog overlay.
 
 ---
 
-### `input[ngxMatTimepicker]`
+### `NgxMatTimepickerInput`
 
-Directive applied to `<input>` fields to connect with `<ngx-mat-timepicker>`. Implements Angular's `ControlValueAccessor`.
+Directive applied to `<input>` fields to connect with `<ngx-mat-timepicker>`. Implements Angular's `ControlValueAccessor` and dispatches native DOM `input` and `change` events.
+
+- **Selector**: `input[ngxMatTimepicker]`
 
 #### Inputs
-| Property | Type | Required | Description |
+| Property | Type | Default | Description |
 |---|---|---|---|
-| `ngxMatTimepicker` | `NgxMatTimepicker` | **Yes** | Reference to the `<ngx-mat-timepicker>` component instance. |
-| `valueType` | `'auto' \| 'string' \| 'date'` | No (Default: `'auto'`) | Determines the model format bound to `FormControl` or `ngModel`. If `'date'` (or `'auto'` when initially bound to a `Date`), outputs a real JavaScript `Date` object with local timezone (e.g. `00:00:00 GMT+0530`). |
+| `ngxMatTimepicker` | `NgxMatTimepicker` | &mdash; (**Required**) | Reference to the `<ngx-mat-timepicker>` component instance. |
+| `valueType` | `'string' \| 'date'` | `'string'` | Determines the model format bound to `FormControl`, `ngModel`, or Signal Forms. If `'date'`, preserves the date portion and user timezone. |
+| `min` | `string \| TimeValue \| Date` | &mdash; | Minimum selectable boundary. |
+| `max` | `string \| TimeValue \| Date` | &mdash; | Maximum selectable boundary. |
 
 #### Outputs
 | Event | Type | Description |
 |---|---|---|
 | `timeChange` | `OutputEmitterRef<string>` | Emitted when input value changes (formatted string). |
-| `dateChange` | `OutputEmitterRef<Date>` | Emitted when a time is selected, returning a real JavaScript `Date` object. |
-
-#### Value Types & Angular Material Model Comparison
-| Picker | Value Type | Empty Value | Example (8:30 PM) |
-|---|---|---|---|
-| **Angular Material timepicker** / `ngx-mat-timepicker` | `D` (default `Date` with `valueType="date"`) | `null` | JavaScript `Date` with time `20:30` in local timezone |
-| **String Mode** | `string` (with `valueType="string"`) | `''` / `null` | `"08:30 PM"` or `"20:30"` |
+| `dateChange` | `OutputEmitterRef<Date>` | Emitted when a time is selected, returning a native JavaScript `Date` object. |
 
 ---
 
-### `<ngx-mat-timepicker-toggle>`
+### `NgxMatTimepickerToggle`
 
 Trigger button that opens the associated timepicker dialog.
 
+- **Selector**: `ngx-mat-timepicker-toggle`
+
 #### Inputs
-| Property | Type | Required | Description |
+| Property | Type | Default | Description |
 |---|---|---|---|
-| `for` | `NgxMatTimepicker` | **Yes** | The timepicker instance to open on click. |
-| `disabled` | `boolean` | No (Default: `false`) | Disables the toggle button. |
+| `for` | `NgxMatTimepicker` | &mdash; (**Required**) | The timepicker instance to open on click. |
+| `disabled` | `boolean` | `false` | Disables the toggle button. |
 
 ---
 
-### `<ngx-mat-timepicker-dialog>`
+### `NgxMatTimepickerDialog`
 
 The modal dialog content component. Can be used **directly** in your templates for inline / embedded time selection without a modal overlay.
+
+- **Selector**: `ngx-mat-timepicker-dialog`
 
 #### Inputs
 | Property | Type | Default | Description |
@@ -254,7 +298,7 @@ The modal dialog content component. Can be used **directly** in your templates f
 
 ---
 
-### Services
+### Services & Internationalization
 
 #### `TimepickerAdapterService`
 Utility service providing mathematical time calculations:
@@ -312,6 +356,7 @@ export interface TimepickerConfig {
   cancelLabel?: string;
   okLabel?: string;
   disabled?: boolean;
+  panelClass?: string | string[];
 }
 ```
 
@@ -338,7 +383,7 @@ export interface TimepickerConfig {
   - Left column: Time display with horizontal AM/PM toggle below (`216×40dp`).
   - Right column: Clock dial.
 
-### Simultaneous Keyboard & Touch Interaction ("Do Both")
+### Simultaneous Keyboard & Touch Interaction
 - **Always Editable Display Boxes**: The Hour and Minute boxes on the clock dial screen are active numeric `<input>` fields at all times. Users do not have to switch modes to type on their keyboard or virtual keypad.
 - **Instant Two-Way Synchronization**:
   - Typing digits into the Hour or Minute box moves the analog clock dial hand in real-time.
@@ -374,9 +419,41 @@ The component is compliant with **WCAG 2.1 AA and AAA** guidelines:
 
 ---
 
-## 7. Theming & CSS Variables
+## 7. Theming & Sass Tokens
 
-The library is styled using Material 3 CSS Custom Properties:
+### Angular Material-Style Sass Module
+
+In your `styles.scss`:
+
+```scss
+@use '@angular/material' as mat;
+@use 'ngx-mat-timepicker' as timepicker;
+
+// 1. Emit standard Material 3 theme & overlay styles
+@include timepicker.theme();
+
+// 2. Optional: Custom palette token overrides
+:root {
+  @include timepicker.tokens((
+    dial-hand: #f48fb1,
+    dial-handle-bg: #f48fb1,
+    time-box-selected-bg: #633b48,
+    action-color: #f48fb1,
+    container-shape: 20px
+  ));
+}
+
+.dark-theme, [data-theme='dark'] {
+  @include timepicker.tokens((
+    container-bg: #1e1b24,
+    dial-bg: #2b2832
+  ));
+}
+```
+
+### CSS Custom Properties Reference
+
+All tokens fall back cleanly to official Material 3 `--mat-sys-*` tokens:
 
 ```scss
 :root {
@@ -413,20 +490,20 @@ The library is styled using Material 3 CSS Custom Properties:
 }
 ```
 
-Dark mode is automatically applied when the `.dark-theme` or `[data-theme='dark']` class is present on any parent element or `<body>`.
-
 ---
 
 ## 8. Code Recipes & Advanced Examples
 
-### Recipe 1: 24-Hour Military Format with Reactive Validation
+### Recipe 1: 24-Hour Format with Reactive Validation
 ```typescript
 import { Component } from '@angular/core';
 import { FormControl, Validators, ReactiveFormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import {
   NgxMatTimepicker,
-  NgxMatTimepickerInputDirective,
-  NgxMatTimepickerToggleComponent,
+  NgxMatTimepickerInput,
+  NgxMatTimepickerToggle,
 } from 'ngx-mat-timepicker';
 
 @Component({
@@ -434,16 +511,19 @@ import {
   standalone: true,
   imports: [
     ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
     NgxMatTimepicker,
-    NgxMatTimepickerInputDirective,
-    NgxMatTimepickerToggleComponent,
+    NgxMatTimepickerInput,
+    NgxMatTimepickerToggle,
   ],
   template: `
-    <div class="field">
-      <input [ngxMatTimepicker]="shiftPicker" [formControl]="shiftControl" />
-      <ngx-mat-timepicker-toggle [for]="shiftPicker" />
+    <mat-form-field appearance="outline">
+      <mat-label>Shift start time</mat-label>
+      <input matInput [ngxMatTimepicker]="shiftPicker" [formControl]="shiftControl" />
+      <ngx-mat-timepicker-toggle matIconSuffix [for]="shiftPicker" />
       <ngx-mat-timepicker #shiftPicker [format]="24" />
-    </div>
+    </mat-form-field>
     @if (shiftControl.invalid) {
       <span class="error">Shift time is required</span>
     }
@@ -454,22 +534,38 @@ export class ShiftPickerComponent {
 }
 ```
 
-### Recipe 2: 15-Minute Snapping with Custom Action Labels
+### Recipe 2: 15-Minute Snapping with Custom Action Labels & Custom Panel Class
 ```html
 <input [ngxMatTimepicker]="meetingPicker" [formControl]="meetingControl" />
-<ngx-mat-timepicker-toggle [for]="meetingPicker" />
+<ngx-mat-timepicker-toggle matIconSuffix [for]="meetingPicker" />
 
 <ngx-mat-timepicker
   #meetingPicker
   [format]="12"
   [stepMinute]="15"
+  [panelClass]="'custom-appointment-overlay'"
   cancelLabel="Discard"
   okLabel="Set Meeting"
   (timeSet)="onMeetingConfirmed($event)"
 />
 ```
 
-### Recipe 3: Inline Embedded Dialog (No Modal Overlay)
+### Recipe 3: Native JavaScript `Date` and Timezone Preservation
+```html
+<mat-form-field appearance="outline">
+  <mat-label>Appointment date & time</mat-label>
+  <input
+    matInput
+    [ngxMatTimepicker]="picker"
+    [formControl]="dateControl"
+    valueType="date"
+  />
+  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker" />
+  <ngx-mat-timepicker #picker (dateSet)="onDateConfirmed($event)" />
+</mat-form-field>
+```
+
+### Recipe 4: Inline Embedded Dialog (No Modal Overlay)
 ```html
 <ngx-mat-timepicker-dialog
   [initialTime]="timeModel"
@@ -479,7 +575,7 @@ export class ShiftPickerComponent {
 />
 ```
 
-### Recipe 4: Programmatic Opening via Button
+### Recipe 5: Programmatic Opening via Button
 ```html
 <button type="button" (click)="picker.open('08:45 AM')">
   Set Alarm

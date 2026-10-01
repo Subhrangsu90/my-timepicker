@@ -1,59 +1,135 @@
-# MyTimepicker
+# Angular Material Timepicker Monorepo
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.1.6.
+Enterprise-grade **Material Design 3 (M3) Time Picker** for Angular 18+, featuring clock dials, numeric inputs, Angular Signal Forms support, and professional Sass theming.
 
-## Development server
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
-To start a local development server, run:
+---
 
-```bash
-ng serve
+## 📁 Repository Structure
+
+```
+my-timepicker/
+├── projects/
+│   ├── ngx-mat-timepicker/    # The core Angular Material 3 Timepicker library
+│   │   ├── src/lib/           # Directives, components, services, and tokens
+│   │   ├── _theming.scss      # Material 3 Sass mixins & tokens
+│   │   └── package.json       # Library package definition
+│   └── demo/                  # Interactive documentation & live showcase app
+├── angular.json               # Angular workspace configuration
+└── package.json               # Monorepo scripts and workspace dependencies
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+---
 
-## Code scaffolding
+## 🚀 Quick Start for the Library
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### 1. Installation
 
 ```bash
-ng generate --help
+npm install ngx-mat-timepicker @angular/cdk
 ```
 
-## Building
+### 2. Global Sass Theming (`styles.scss`)
 
-To build the project run:
+```scss
+@use '@angular/material' as mat;
+@use 'ngx-mat-timepicker' as timepicker;
 
+// Include default Material 3 timepicker styles
+@include timepicker.theme();
+```
+
+### 3. Usage with Angular Signal Forms (`@angular/forms/signals`)
+
+```html
+<mat-form-field appearance="outline">
+  <mat-label>Meeting time</mat-label>
+  <input 
+    matInput 
+    [formField]="bookingForm.meetingTime" 
+    [ngxMatTimepicker]="picker" 
+    placeholder="08:30 AM" 
+  />
+  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker" />
+  <ngx-mat-timepicker #picker />
+</mat-form-field>
+```
+
+```typescript
+import { Component, signal } from '@angular/core';
+import { form, FormField, required } from '@angular/forms/signals';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {
+  NgxMatTimepicker,
+  NgxMatTimepickerInput,
+  NgxMatTimepickerToggle,
+} from 'ngx-mat-timepicker';
+
+@Component({
+  standalone: true,
+  imports: [
+    FormField,
+    MatFormFieldModule,
+    MatInputModule,
+    NgxMatTimepicker,
+    NgxMatTimepickerInput,
+    NgxMatTimepickerToggle,
+  ],
+  templateUrl: './meeting.html',
+})
+export class MeetingComponent {
+  readonly model = signal({ meetingTime: '08:30 AM' });
+  readonly bookingForm = form(this.model, (schema) => {
+    required(schema.meetingTime, { message: 'Meeting time is required' });
+  });
+}
+```
+
+> [!TIP]
+> Always apply `matIconSuffix` to `<ngx-mat-timepicker-toggle>` inside `<mat-form-field>` to ensure it renders cleanly in the trailing icon slot.
+
+---
+
+## 🛠️ Development & Monorepo Commands
+
+### Run the Documentation & Demo App
 ```bash
-ng build
+npm start
+# or: ng serve demo
 ```
+Navigate to `http://localhost:4200/`.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
+### Build the Library
 ```bash
-ng test
+npm run build
+# Compiles to dist/ngx-mat-timepicker
 ```
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
+### Build the Demo Application
 ```bash
-ng e2e
+npm run build:demo
+# Compiles to dist/demo
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+### Run Unit Tests
+```bash
+# Library tests (Vitest)
+npm test -- --watch=false
 
-## Additional Resources
+# Demo application tests
+npx ng test demo --watch=false
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+---
+
+## 📖 Complete Documentation
+
+For the full API reference, styling options, and customization guide, see [projects/ngx-mat-timepicker/README.md](projects/ngx-mat-timepicker/README.md).
+
+---
+
+## 📄 License
+
+MIT © [Subhrangsu Chowdhury](https://github.com/Subhrangsu90)

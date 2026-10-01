@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { form, FormField, required } from '@angular/forms/signals';
 import {
   NgxMatTimepicker,
   NgxMatTimepickerDialog,
@@ -21,6 +22,7 @@ export type DocTab = 'overview' | 'api' | 'styling' | 'examples';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FormField,
     NgxMatTimepicker,
     NgxMatTimepickerInput,
     NgxMatTimepickerToggle,
@@ -86,6 +88,14 @@ export class App {
   readonly timeDateControl = new FormControl<Date | null>(new Date(2026, 8, 30, 14, 30, 0));
   readonly timeLocaleControl = new FormControl('03:30 PM');
 
+  // Angular Signal Forms Example
+  readonly signalFormModel = signal({
+    meetingTime: '08:30 AM',
+  });
+  readonly signalForm = form(this.signalFormModel, (s) => {
+    required(s.meetingTime, { message: 'Meeting time is required' });
+  });
+
   // i18n & RTL State
   readonly selectedLocale = signal<string>('es-ES');
   readonly isRtl = signal<boolean>(false);
@@ -99,12 +109,15 @@ export class App {
   readonly embeddedFormat = signal<TimeFormat>('12h');
 
   // Code Snippets for Copying
-  readonly snippetBasicHtml = `<div class="field-container">\n  <input matInput [ngxMatTimepicker]="picker" [formControl]="timeControl" placeholder="Pick a time">\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n</div>\n<ngx-mat-timepicker #picker/>`;
+  readonly snippetBasicHtml = `<div class="field-container">\n  <input [ngxMatTimepicker]="picker" [formControl]="timeControl" placeholder="Pick a time">\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n</div>\n<ngx-mat-timepicker #picker/>`;
   readonly snippetBasicTs = `import { Component } from '@angular/core';\nimport { FormControl, ReactiveFormsModule } from '@angular/forms';\nimport { NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle } from 'ngx-mat-timepicker';\n\n@Component({\n  selector: 'basic-timepicker-example',\n  standalone: true,\n  imports: [ReactiveFormsModule, NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle],\n  templateUrl: './basic-timepicker.html',\n})\nexport class BasicTimepickerExample {\n  readonly timeControl = new FormControl('07:00 AM');\n}`;
   readonly snippetBasicCss = `.field-container {\n  display: flex;\n  align-items: center;\n  max-width: 320px;\n  border: 1px solid #49454f;\n  border-radius: 8px;\n  background: #1d1b20;\n}`;
-  readonly snippetConnectingHtml = `<input matInput [ngxMatTimepicker]="picker">\n<ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n<ngx-mat-timepicker #picker/>`;
+  readonly snippetConnectingHtml = `<mat-form-field appearance="outline">\n  <mat-label>Pick a time</mat-label>\n  <input matInput [ngxMatTimepicker]="picker">\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n  <ngx-mat-timepicker #picker/>\n</mat-form-field>`;
   readonly snippetFormsTs = `readonly timeControl = new FormControl('07:00 AM', [Validators.required]);\n\nonSave(): void {\n  if (this.timeControl.valid) {\n    console.log('Selected Time:', this.timeControl.value);\n  }\n}`;
-  readonly snippetDateHtml = `<input [ngxMatTimepicker]="picker" [formControl]="dateControl" valueType="date">\n<ngx-mat-timepicker-toggle [for]="picker"/>\n<ngx-mat-timepicker #picker (dateSet)="onDateChange($event)"/>`;
+  readonly snippetSignalFormsHtml = `<mat-form-field appearance="outline">\n  <mat-label>Meeting time</mat-label>\n  <input matInput [formField]="bookingForm.meetingTime" [ngxMatTimepicker]="picker" placeholder="Pick a time" />\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker" />\n  <ngx-mat-timepicker #picker />\n</mat-form-field>\n\n@if (bookingForm.meetingTime().touched() && bookingForm.meetingTime().errors().length) {\n  <span class="error-msg">{{ bookingForm.meetingTime().errors()[0].message }}</span>\n}`;
+  readonly snippetSignalFormsTs = `import { Component, signal } from '@angular/core';\nimport { form, FormField, required } from '@angular/forms/signals';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { MatInputModule } from '@angular/material/input';\nimport { NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle } from 'ngx-mat-timepicker';\n\n@Component({\n  standalone: true,\n  imports: [FormField, MatFormFieldModule, MatInputModule, NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle],\n  templateUrl: './meeting-time.html',\n})\nexport class MeetingTimeComponent {\n  readonly model = signal({ meetingTime: '08:30 AM' });\n  readonly bookingForm = form(this.model, (s) => {\n    required(s.meetingTime, { message: 'Meeting time is required' });\n  });\n}`;
+  readonly snippetDateHtml = `<input [ngxMatTimepicker]="picker" [formControl]="dateControl" valueType="date">\n<ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n<ngx-mat-timepicker #picker (dateSet)="onDateChange($event)"/>`;
+  readonly snippetThemingScss = `@use 'ngx-mat-timepicker' as timepicker;\n\n// 1. Emit full Material 3 theme & overlay styles\n@include timepicker.theme();\n\n// 2. Optional: fine-grained token overrides\n@include timepicker.tokens((\n  container-bg: #1e1b24,\n  dial-pin: #d0bcff\n));`;
   readonly snippetApiImport = `import {\n  NgxMatTimepicker,\n  NgxMatTimepickerInput,\n  NgxMatTimepickerToggle,\n  NgxMatTimepickerDialog,\n  NgxMatTimepickerIntl\n} from 'ngx-mat-timepicker';`;
 
   constructor() {

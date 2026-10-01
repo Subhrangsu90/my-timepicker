@@ -88,26 +88,35 @@ $dark-tokens: (
   }
 }
 
-/// Emits full Material 3 theme variables and structural styles
-@mixin theme($theme: null) {
-  :root,
-  body {
-    @include tokens($light-tokens);
+/// Emits full Material 3 theme variables and structural styles.
+/// You can pass custom token overrides directly into the theme mixin:
+/// @include timepicker.theme((container-bg: #4f12c9, dial-hand: #f48fb1));
+@mixin theme($tokens: ()) {
+  $merged-light: map.merge($light-tokens, $tokens);
+  $merged-dark: map.merge($dark-tokens, $tokens);
+
+  :root {
+    @include tokens($merged-light);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      @include tokens($merged-dark);
+    }
   }
 
   .dark-theme,
   .dark-mode,
   .dark,
-  [data-theme='dark'],
-  body.dark-mode,
-  body.dark-theme {
-    @include tokens($dark-tokens);
+  [data-theme='dark'] {
+    @include tokens($merged-dark);
   }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme='light']):not(.light-theme):not(.light-mode) {
-      @include tokens($dark-tokens);
-    }
+  .light-theme,
+  .light-mode,
+  .light,
+  [data-theme='light'] {
+    @include tokens($merged-light);
   }
 
   @include base();

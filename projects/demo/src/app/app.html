@@ -227,11 +227,42 @@
 
         <!-- Section: Use with Angular Forms -->
         <section class="doc-section" id="angular-forms">
-          <h2 class="doc-heading">Use with Angular Forms</h2>
+          <h2 class="doc-heading">Use with Angular Forms & Signal Forms</h2>
           <p>
-            The timepicker input implements <code class="inline-code">ControlValueAccessor</code>, allowing integration
-            with Reactive Forms and template-driven forms.
+            The timepicker input implements <code class="inline-code">ControlValueAccessor</code> and dispatches standard DOM events, allowing seamless integration with Reactive Forms, Template-driven forms, and modern <strong>Angular Signal Forms (<code>&#64;angular/forms/signals</code>)</strong>.
           </p>
+
+          <h3 class="api-entity-title" style="margin-top: 16px; margin-bottom: 8px;">1. Angular Signal Forms (<code>&#64;angular/forms/signals</code>)</h3>
+          <p>
+            Use <code class="inline-code">[formField]</code> directly on the input. When a time is selected or typed, the signal model is updated reactively, triggering validation rules automatically.
+          </p>
+          <div class="code-box">
+            <div class="code-box-header">
+              <span class="code-lang">HTML</span>
+              <button class="code-action-btn" (click)="copyToClipboard(snippetSignalFormsHtml, 'Signal Forms HTML')">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor"
+                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                </svg>
+              </button>
+            </div>
+            <pre><code class="language-html">{{ snippetSignalFormsHtml }}</code></pre>
+          </div>
+
+          <div class="code-box">
+            <div class="code-box-header">
+              <span class="code-lang">TypeScript</span>
+              <button class="code-action-btn" (click)="copyToClipboard(snippetSignalFormsTs, 'Signal Forms TS')">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor"
+                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                </svg>
+              </button>
+            </div>
+            <pre><code class="language-typescript">{{ snippetSignalFormsTs }}</code></pre>
+          </div>
+
+          <h3 class="api-entity-title" style="margin-top: 24px; margin-bottom: 8px;">2. Reactive Forms (<code>FormControl</code>)</h3>
           <div class="code-box">
             <div class="code-box-header">
               <span class="code-lang">TypeScript</span>
@@ -272,7 +303,7 @@
               </button>
             </div>
             <pre><code class="language-html">&lt;<span class="token-tag">input</span> [<span class="token-attr">ngxMatTimepicker</span>]=<span class="token-val">"picker"</span> [<span class="token-attr">formControl</span>]=<span class="token-val">"dateControl"</span> <span class="token-attr">valueType</span>=<span class="token-val">"date"</span>&gt;
-&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker"</span>/&gt;
+&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> <span class="token-attr">matIconSuffix</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker"</span>/&gt;
 &lt;<span class="token-tag">ngx-mat-timepicker</span> <span class="token-attr">#picker</span> (<span class="token-attr">dateSet</span>)=<span class="token-val">"onDateChange($event)"</span>/&gt;</code></pre>
           </div>
         </section>
@@ -314,7 +345,7 @@
             toggle element:
           </p>
           <div class="code-box">
-            <pre><code class="language-html">&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker"</span>&gt;
+            <pre><code class="language-html">&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> <span class="token-attr">matIconSuffix</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker"</span>&gt;
   &lt;<span class="token-tag">mat-icon</span> <span class="token-attr">ngxMatTimepickerToggleIcon</span>&gt;schedule&lt;/<span class="token-tag">mat-icon</span>&gt;
 &lt;/<span class="token-tag">ngx-mat-timepicker-toggle</span>&gt;</code></pre>
           </div>
@@ -519,6 +550,12 @@
                   <td><code>string</code></td>
                   <td><code>'en-US'</code></td>
                   <td>Active locale code for numbers and text parsing.</td>
+                </tr>
+                <tr>
+                  <td><code>&#64;Input() panelClass</code></td>
+                  <td><code>string | string[]</code></td>
+                  <td><code>''</code></td>
+                  <td>Custom CSS class or classes added to the overlay dialog panel.</td>
                 </tr>
                 <tr>
                   <td><code>&#64;Output() timeSet</code></td>
@@ -1054,33 +1091,44 @@
 
         <!-- Section: Scss Integration -->
         <section class="doc-section" id="sass-theming">
-          <h3 class="doc-heading">Overriding Tokens in SCSS / CSS</h3>
-          <p>Customize the timepicker tokens in your application stylesheet:</p>
+          <h3 class="doc-heading">Sass Mixins & Token Theming</h3>
+          <p>
+            In your global <code class="inline-code">styles.scss</code>, import and include the timepicker theme in the same professional manner as Angular Material:
+          </p>
 
           <div class="code-box">
             <div class="code-box-header">
               <span class="code-lang">SCSS</span>
               <button class="code-action-btn"
-                (click)="copyToClipboard(':root {\n  --ngx-mat-tp-dial-hand: #f48fb1;\n  --ngx-mat-tp-dial-handle-bg: #f48fb1;\n  --ngx-mat-tp-time-box-selected-bg: #633b48;\n  --ngx-mat-tp-action-color: #f48fb1;\n  --ngx-mat-tp-container-shape: 20px;\n}\n\n.dark-theme, [data-theme=\'dark\'] {\n  --ngx-mat-tp-container-bg: #1e1b24;\n  --ngx-mat-tp-dial-bg: #2b2832;\n}', 'SCSS snippet')">
+                (click)="copyToClipboard(snippetThemingScss, 'SCSS snippet')">
                 <svg viewBox="0 0 24 24" width="16" height="16">
                   <path fill="currentColor"
                     d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
                 </svg>
               </button>
             </div>
-            <pre><code class="language-css"><span class="token-kw">&#64;use</span> <span class="token-str">'ngx-mat-timepicker/src/lib/themes/timepicker'</span>;
+            <pre><code class="language-css"><span class="token-kw">&#64;use</span> <span class="token-str">'@angular/material'</span> <span class="token-kw">as</span> mat;
+<span class="token-kw">&#64;use</span> <span class="token-str">'ngx-mat-timepicker'</span> <span class="token-kw">as</span> timepicker;
 
+<span class="token-comment">// 1. Include default Material 3 timepicker styles</span>
+<span class="token-kw">&#64;include</span> timepicker.theme();
+
+<span class="token-comment">// 2. Optional: Custom palette token overrides</span>
 <span class="token-tag">:root</span> &#123;
-  <span class="token-attr">--ngx-mat-tp-dial-hand</span>: <span class="token-val">#f48fb1</span>;
-  <span class="token-attr">--ngx-mat-tp-dial-handle-bg</span>: <span class="token-val">#f48fb1</span>;
-  <span class="token-attr">--ngx-mat-tp-time-box-selected-bg</span>: <span class="token-val">#633b48</span>;
-  <span class="token-attr">--ngx-mat-tp-action-color</span>: <span class="token-val">#f48fb1</span>;
-  <span class="token-attr">--ngx-mat-tp-container-shape</span>: <span class="token-val">20px</span>;
+  <span class="token-kw">&#64;include</span> timepicker.tokens((
+    dial-hand: <span class="token-val">#f48fb1</span>,
+    dial-handle-bg: <span class="token-val">#f48fb1</span>,
+    time-box-selected-bg: <span class="token-val">#633b48</span>,
+    action-color: <span class="token-val">#f48fb1</span>,
+    container-shape: <span class="token-val">20px</span>
+  ));
 &#125;
 
 <span class="token-tag">.dark-theme</span>, [<span class="token-attr">data-theme</span>=<span class="token-str">'dark'</span>] &#123;
-  <span class="token-attr">--ngx-mat-tp-container-bg</span>: <span class="token-val">#1e1b24</span>;
-  <span class="token-attr">--ngx-mat-tp-dial-bg</span>: <span class="token-val">#2b2832</span>;
+  <span class="token-kw">&#64;include</span> timepicker.tokens((
+    container-bg: <span class="token-val">#1e1b24</span>,
+    dial-bg: <span class="token-val">#2b2832</span>
+  ));
 &#125;</code></pre>
           </div>
         </section>
@@ -1130,6 +1178,61 @@
           any card to view the implementation.
         </p>
 
+        <!-- Example 0: Angular Signal Forms -->
+        <div class="example-card" id="ex-signals">
+          <div class="example-card-header">
+            <span class="example-card-title">Angular Signal Forms (&#64;angular/forms/signals)</span>
+            <div class="example-actions">
+              <button class="action-btn" [class.active]="isCodeExpanded('exSignals')" (click)="toggleCode('exSignals')"
+                title="Toggle source code">
+                <svg viewBox="0 0 24 24" width="18" height="18">
+                  <path fill="currentColor"
+                    d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+          <div class="example-card-preview" style="flex-direction: column; align-items: flex-start; gap: 16px;">
+            <div class="preview-field-box">
+              <input type="text" class="mat-doc-input" [ngxMatTimepicker]="pickerSignalEx"
+                [formField]="signalForm.meetingTime" placeholder="Meeting time" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="pickerSignalEx" />
+            </div>
+            <ngx-mat-timepicker #pickerSignalEx />
+            <div class="example-output-badge">
+              <strong>Signal Model:</strong> <code>{{ signalForm.meetingTime().value() }}</code> &bull;
+              <strong>Touched:</strong> <code>{{ signalForm.meetingTime().touched() }}</code> &bull;
+              <strong>Errors:</strong> <code>{{ signalForm.meetingTime().errors().length ? signalForm.meetingTime().errors()[0].message : 'None' }}</code>
+            </div>
+          </div>
+          @if (isCodeExpanded('exSignals')) {
+          <div class="example-code-panel">
+            <div class="code-tabs-bar">
+              <div class="code-tab-buttons">
+                <button class="code-tab-btn" [class.active]="getActiveCodeTab('exSignals') === 'html'"
+                  (click)="setCodeTab('exSignals', 'html')">
+                  HTML
+                </button>
+                <button class="code-tab-btn" [class.active]="getActiveCodeTab('exSignals') === 'ts'"
+                  (click)="setCodeTab('exSignals', 'ts')">
+                  TS
+                </button>
+              </div>
+              <button class="code-copy-btn" (click)="copyToClipboard(getActiveCodeTab('exSignals') === 'ts' ? snippetSignalFormsTs : snippetSignalFormsHtml, 'Code')">
+                Copy
+              </button>
+            </div>
+            <div class="code-block-viewer">
+              @if (getActiveCodeTab('exSignals') === 'ts') {
+              <pre><code class="language-typescript">{{ snippetSignalFormsTs }}</code></pre>
+              } @else {
+              <pre><code class="language-html">{{ snippetSignalFormsHtml }}</code></pre>
+              }
+            </div>
+          </div>
+          }
+        </div>
+
         <!-- Example 1: 12-Hour Vertical -->
         <div class="example-card" id="ex-12h">
           <div class="example-card-header">
@@ -1148,7 +1251,7 @@
             <div class="preview-field-box">
               <input type="text" class="mat-doc-input" [ngxMatTimepicker]="picker12h" [formControl]="time12hControl"
                 placeholder="07:00 AM" />
-              <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="picker12h" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="picker12h" />
             </div>
             <ngx-mat-timepicker #picker12h [format]="12" orientation="vertical" (timeSet)="onTimeSet($event)" />
           </div>
@@ -1156,7 +1259,7 @@
           <div class="example-code-panel">
             <div class="code-block-viewer">
               <pre><code class="language-html">&lt;<span class="token-tag">input</span> [<span class="token-attr">ngxMatTimepicker</span>]=<span class="token-val">"picker"</span> [<span class="token-attr">formControl</span>]=<span class="token-val">"timeControl"</span>&gt;
-&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker"</span>/&gt;
+&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> <span class="token-attr">matIconSuffix</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker"</span>/&gt;
 &lt;<span class="token-tag">ngx-mat-timepicker</span> <span class="token-attr">#picker</span> [<span class="token-attr">format</span>]=<span class="token-val">"12"</span> <span class="token-attr">orientation</span>=<span class="token-val">"vertical"</span>/&gt;</code></pre>
             </div>
           </div>
@@ -1181,7 +1284,7 @@
             <div class="preview-field-box">
               <input type="text" class="mat-doc-input" [ngxMatTimepicker]="picker24h" [formControl]="time24hControl"
                 placeholder="20:00" />
-              <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="picker24h" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="picker24h" />
             </div>
             <ngx-mat-timepicker #picker24h [format]="24" orientation="vertical" (timeSet)="onTimeSet($event)" />
           </div>
@@ -1189,7 +1292,7 @@
           <div class="example-code-panel">
             <div class="code-block-viewer">
               <pre><code class="language-html">&lt;<span class="token-tag">input</span> [<span class="token-attr">ngxMatTimepicker</span>]=<span class="token-val">"picker24"</span> [<span class="token-attr">formControl</span>]=<span class="token-val">"time24Control"</span>&gt;
-&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker24"</span>/&gt;
+&lt;<span class="token-tag">ngx-mat-timepicker-toggle</span> <span class="token-attr">matIconSuffix</span> [<span class="token-attr">for</span>]=<span class="token-val">"picker24"</span>/&gt;
 &lt;<span class="token-tag">ngx-mat-timepicker</span> <span class="token-attr">#picker24</span> [<span class="token-attr">format</span>]=<span class="token-val">"24"</span>/&gt;</code></pre>
             </div>
           </div>
@@ -1214,7 +1317,7 @@
             <div class="preview-field-box">
               <input type="text" class="mat-doc-input" [ngxMatTimepicker]="pickerLand"
                 [formControl]="timeLandscapeControl" placeholder="07:30 AM" />
-              <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="pickerLand" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="pickerLand" />
             </div>
             <ngx-mat-timepicker #pickerLand [format]="12" orientation="horizontal" (timeSet)="onTimeSet($event)" />
           </div>
@@ -1245,7 +1348,7 @@
             <div class="preview-field-box">
               <input type="text" class="mat-doc-input" [ngxMatTimepicker]="pickerStep" [formControl]="timeStep5Control"
                 placeholder="09:15 AM" />
-              <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="pickerStep" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="pickerStep" />
             </div>
             <ngx-mat-timepicker #pickerStep [format]="12" [stepMinute]="5" (timeSet)="onTimeSet($event)" />
           </div>
@@ -1276,7 +1379,7 @@
             <div class="preview-field-box">
               <input type="text" class="mat-doc-input" [ngxMatTimepicker]="pickerDateEx" [formControl]="timeDateControl"
                 valueType="date" placeholder="Date object output" />
-              <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="pickerDateEx" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="pickerDateEx" />
             </div>
             <ngx-mat-timepicker #pickerDateEx [format]="12" (dateSet)="onDateSet($event)" />
           </div>
@@ -1315,7 +1418,7 @@
             <div class="preview-field-box">
               <input type="text" class="mat-doc-input" [ngxMatTimepicker]="pickerI18nEx"
                 [formControl]="timeLocaleControl" placeholder="Select localized time" />
-              <ngx-mat-timepicker-toggle class="mat-doc-toggle" [for]="pickerI18nEx" />
+              <ngx-mat-timepicker-toggle class="mat-doc-toggle" matIconSuffix [for]="pickerI18nEx" />
             </div>
             <ngx-mat-timepicker #pickerI18nEx [format]="12" [locale]="selectedLocale()" />
           </div>
@@ -1338,6 +1441,7 @@
         <div class="toc-sticky-box">
           <h3 class="toc-title">Examples Content</h3>
           <ul class="toc-list">
+            <li><a class="toc-link" (click)="scrollToSection('ex-signals')">Signal Forms</a></li>
             <li><a class="toc-link" (click)="scrollToSection('ex-12h')">12-Hour Vertical</a></li>
             <li><a class="toc-link" (click)="scrollToSection('ex-24h')">24-Hour Concentric</a></li>
             <li><a class="toc-link" (click)="scrollToSection('ex-landscape')">Horizontal Landscape</a></li>
