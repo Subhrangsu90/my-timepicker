@@ -37,6 +37,13 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
       justify-content: center;
       vertical-align: middle;
       box-sizing: border-box;
+      color: var(
+        --mat-timepicker-toggle-icon-color,
+        var(
+          --mat-datepicker-toggle-icon-color,
+          var(--mat-form-field-icon-color, var(--mat-sys-on-surface-variant, currentColor))
+        )
+      );
     }
 
     .timepicker-toggle-button {
@@ -48,14 +55,17 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
       background: transparent;
       border: none;
       border-radius: 50%;
-      color: var(--mat-form-field-icon-color, var(--ngx-mat-tp-action-icon, #49454f));
+      color: inherit;
       cursor: pointer;
       outline: none;
       padding: 0;
       transition: background-color 150ms ease, color 150ms ease;
 
       &:hover:not([disabled]) {
-        background-color: rgba(0, 0, 0, 0.04);
+        background-color: var(
+          --mat-sys-state-hover-state-layer-opacity,
+          rgba(128, 128, 128, 0.12)
+        );
       }
 
       &:focus-visible {
@@ -71,6 +81,7 @@ import { NgxMatTimepicker } from '../ngx-mat-timepicker';
     .toggle-svg {
       width: 24px;
       height: 24px;
+      display: block;
     }
   `,
 })
