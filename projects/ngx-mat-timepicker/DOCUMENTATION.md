@@ -44,7 +44,7 @@ The `ngx-mat-timepicker` library provides a modern Angular Material 3 implementa
 
 ### 1. Install Dependencies
 ```bash
-npm install ngx-mat-timepicker @angular/cdk
+npm install ngx-material-timepicker @angular/cdk
 ```
 
 ### 2. Include CDK Overlay & Timepicker Theme Styles
@@ -52,7 +52,7 @@ In your global stylesheet (`src/styles.scss`):
 ```scss
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use '@ngx-material/timepicker' as timepicker;
+@use 'ngx-material-timepicker' as timepicker;
 
 // 1. Define Angular Material 3 Themes (Light & Dark)
 $light-theme: mat.define-theme((
@@ -465,7 +465,7 @@ In your `styles.scss`:
 ```scss
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use '@ngx-material/timepicker' as timepicker;
+@use 'ngx-material-timepicker' as timepicker;
 
 // 1. Define Angular Material 3 Themes (Light & Dark)
 $light-theme: mat.define-theme((

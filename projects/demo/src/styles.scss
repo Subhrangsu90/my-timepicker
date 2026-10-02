@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use '@ngx-material/timepicker' as timepicker;
+@use 'ngx-material-timepicker' as timepicker;
 
 // Define Angular Material 3 Themes
 $light-theme: mat.define-theme((
@@ -109,7 +109,7 @@ body.dark-mode {
   justify-content: center;
 }
 
-.cdk-overlay-dark-backdrop {
-  background: rgba(15, 13, 19, 0.45);
-  backdrop-filter: blur(2px);
-}
+// .cdk-overlay-dark-backdrop {
+//   background: rgba(15, 13, 19, 0.45);
+//   backdrop-filter: blur(2px);
+// }

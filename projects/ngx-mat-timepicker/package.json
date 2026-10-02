@@ -1,5 +1,5 @@
 {
-  "name": "@ngx-material/timepicker",
+  "name": "ngx-material-timepicker",
   "version": "22.0.0",
   "description": "Material Design 3 (M3) Time Picker for Angular applications with clock dial and text input modes.",
   "keywords": [

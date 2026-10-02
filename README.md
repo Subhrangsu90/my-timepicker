@@ -1,8 +1,8 @@
-# @ngx-material/timepicker
+# ngx-material-timepicker
 
 Enterprise-grade **Material Design 3 (M3) Time Picker** for Angular 18+, featuring clock dials, numeric inputs, Angular Signal Forms support, and professional Sass theming.
 
-[![npm version](https://img.shields.io/npm/v/@ngx-material/timepicker.svg)](https://www.npmjs.com/package/@ngx-material/timepicker)
+[![npm version](https://img.shields.io/npm/v/ngx-material-timepicker.svg)](https://www.npmjs.com/package/ngx-material-timepicker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -12,10 +12,10 @@ Enterprise-grade **Material Design 3 (M3) Time Picker** for Angular 18+, featuri
 ```
 my-timepicker/
 ├── projects/
-│   ├── ngx-mat-timepicker/    # The core @ngx-material/timepicker library
+│   ├── ngx-mat-timepicker/    # The core ngx-material-timepicker library
 │   │   ├── src/lib/           # Directives, components, services, and tokens
 │   │   ├── _theming.scss      # Material 3 Sass mixins & tokens
-│   │   └── package.json       # Library package definition (@ngx-material/timepicker)
+│   │   └── package.json       # Library package definition (ngx-material-timepicker)
 │   └── demo/                  # Interactive documentation & live showcase app
 ├── angular.json               # Angular workspace configuration
 └── package.json               # Monorepo scripts and workspace dependencies
@@ -28,17 +28,17 @@ my-timepicker/
 ### 1. Installation
 
 ```bash
-npm install @ngx-material/timepicker @angular/cdk
+npm install ngx-material-timepicker @angular/cdk
 ```
 
 ### 2. Global Sass Theming (`styles.scss`)
 
-In your global `styles.scss`, configure your Angular Material 3 themes and include the `@ngx-material/timepicker` theme:
+In your global `styles.scss`, configure your Angular Material 3 themes and include the `ngx-material-timepicker` theme:
 
 ```scss
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use '@ngx-material/timepicker' as timepicker;
+@use 'ngx-material-timepicker' as timepicker;
 
 // 1. Define Angular Material 3 Themes (Light & Dark)
 $light-theme: mat.define-theme((
@@ -108,7 +108,7 @@ import {
   NgxMatTimepicker,
   NgxMatTimepickerInput,
   NgxMatTimepickerToggle,
-} from '@ngx-material/timepicker';
+} from 'ngx-material-timepicker';
 
 @Component({
   standalone: true,

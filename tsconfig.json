@@ -8,13 +8,13 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@ngx-material/timepicker": [
+      "ngx-material-timepicker": [
         "./projects/ngx-mat-timepicker/src/public-api.ts",
-        "./dist/@ngx-material/timepicker"
+        "./dist/ngx-material-timepicker"
       ],
       "ngx-mat-timepicker": [
         "./projects/ngx-mat-timepicker/src/public-api.ts",
-        "./dist/@ngx-material/timepicker"
+        "./dist/ngx-material-timepicker"
       ]
     },
     "skipLibCheck": true,
