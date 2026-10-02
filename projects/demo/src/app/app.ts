@@ -1,7 +1,24 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { form, FormField, required } from '@angular/forms/signals';
+
+// Real Angular Material Imports
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatBadgeModule } from '@angular/material/badge';
+import { MatSliderModule } from '@angular/material/slider';
+
+// ngx-mat-timepicker library imports
 import {
   NgxMatTimepicker,
   NgxMatTimepickerDialog,
@@ -15,6 +32,16 @@ import {
 
 export type DocTab = 'overview' | 'api' | 'styling' | 'examples';
 
+export interface ThemePreset {
+  id: string;
+  name: string;
+  primaryLight: string;
+  primaryDark: string;
+  containerLight: string;
+  containerDark: string;
+  chipColor: string;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -23,6 +50,21 @@ export type DocTab = 'overview' | 'api' | 'styling' | 'examples';
     FormsModule,
     ReactiveFormsModule,
     FormField,
+    // Angular Material
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatChipsModule,
+    MatButtonToggleModule,
+    MatSelectModule,
+    MatSlideToggleModule,
+    MatTooltipModule,
+    MatDividerModule,
+    MatBadgeModule,
+    MatSliderModule,
+    // ngx-mat-timepicker
     NgxMatTimepicker,
     NgxMatTimepickerInput,
     NgxMatTimepickerToggle,
@@ -32,16 +74,20 @@ export type DocTab = 'overview' | 'api' | 'styling' | 'examples';
   styleUrl: './app.scss',
 })
 export class App {
-  private intl = inject(NgxMatTimepickerIntl);
+  private readonly intl = inject(NgxMatTimepickerIntl);
 
   // Active Top Navigation Tab
   readonly activeTab = signal<DocTab>('overview');
 
-  // Dark/Light Theme state (Default dark to match official Angular Material doc)
+  // Dark/Light Theme state (Default dark to match Angular Material documentation)
   readonly isDarkMode = signal<boolean>(true);
 
   // Active TOC Anchor
-  readonly activeToc = signal<string>('connecting');
+  readonly activeToc = signal<string>('basic');
+
+  // Copied feedback messages
+  readonly copyFeedback = signal<string | null>(null);
+  readonly copiedNpm = signal<boolean>(false);
 
   // Code snippets expansion state per example ID
   readonly expandedCode = signal<Record<string, boolean>>({});
@@ -49,106 +95,201 @@ export class App {
   // Active code tab ('html' | 'ts' | 'css') per example ID
   readonly activeCodeTab = signal<Record<string, 'html' | 'ts' | 'css'>>({});
 
-  // Copied feedback message
-  readonly copyFeedback = signal<string | null>(null);
+  // API Search Query Filter
+  readonly apiSearchQuery = signal<string>('');
 
-  // Styling Tab: Live Theme Playground
-  readonly customPrimaryColor = signal<string>('#f48fb1');
-  readonly customContainerColor = signal<string>('#633b48');
-  readonly customRadius = signal<string>('28px');
-
-  setThemeColor(color: string): void {
-    this.customPrimaryColor.set(color);
-    switch (color) {
-      case '#f48fb1':
-        this.customContainerColor.set('#633b48');
-        break;
-      case '#29b6f6':
-        this.customContainerColor.set('#004a77');
-        break;
-      case '#66bb6a':
-        this.customContainerColor.set('#005324');
-        break;
-      case '#ffa726':
-        this.customContainerColor.set('#6e3900');
-        break;
-      default: // #6750a4
-        this.customContainerColor.set('#4f378b');
-        break;
-    }
-  }
-
-  // Form Controls for Examples
-  readonly basicTimeControl = new FormControl('07:00 AM');
-  readonly time12hControl = new FormControl('07:00 AM');
-  readonly time24hControl = new FormControl('20:00');
-  readonly timeLandscapeControl = new FormControl('07:30 AM');
-  readonly timeStep5Control = new FormControl('09:15 AM');
-  readonly timeRequiredControl = new FormControl('10:30 AM', [Validators.required]);
-  readonly timeDateControl = new FormControl<Date | null>(new Date(2026, 8, 30, 14, 30, 0));
-  readonly timeLocaleControl = new FormControl('03:30 PM');
+  // ---------------------------------------------------------------------------
+  // Overview Tab Form Controls
+  // ---------------------------------------------------------------------------
+  readonly basicTimeControl = new FormControl('07:30 AM');
+  readonly time12hControl = new FormControl('09:15 AM');
+  readonly time24hControl = new FormControl('21:45');
+  readonly timeLandscapeControl = new FormControl('08:00 AM');
+  readonly timeStepControl = new FormControl('10:15 AM');
+  readonly currentStep = signal<number>(15);
+  readonly timeValidationControl = new FormControl('', [Validators.required]);
+  readonly timeDateControl = new FormControl<Date | null>(new Date(2026, 9, 2, 14, 30, 0));
 
   // Angular Signal Forms Example
   readonly signalFormModel = signal({
-    meetingTime: '08:30 AM',
+    meetingTime: '10:30 AM',
   });
   readonly signalForm = form(this.signalFormModel, (s) => {
     required(s.meetingTime, { message: 'Meeting time is required' });
   });
 
-  // i18n & RTL State
-  readonly selectedLocale = signal<string>('es-ES');
+  // ---------------------------------------------------------------------------
+  // Scenarios & Real-World Examples
+  // ---------------------------------------------------------------------------
+  // Scenario 1: Flight Itinerary
+  readonly flightDeparture = new FormControl('08:45 AM', [Validators.required]);
+  readonly flightArrival = new FormControl('01:30 PM', [Validators.required]);
+  readonly flightSeatClass = new FormControl('Business');
+
+  // Scenario 2: Medical Clinic Scheduler
+  readonly doctorCategory = new FormControl('cardiology');
+  readonly appointmentTime = new FormControl('10:30 AM', [Validators.required]);
+  readonly appointmentStep = signal<number>(15);
+
+  // Scenario 3: Timesheet Time Tracker (Signal Forms)
+  readonly timesheetModel = signal({
+    clockIn: '09:00 AM',
+    clockOut: '05:30 PM',
+    taskDescription: 'Frontend component library maintenance',
+  });
+  readonly timesheetForm = form(this.timesheetModel, (s) => {
+    required(s.clockIn, { message: 'Clock-in time is required' });
+    required(s.clockOut, { message: 'Clock-out time is required' });
+  });
+
+  // Scenario 4: Global Scheduler (i18n & RTL)
+  readonly selectedLocale = signal<string>('en-US');
   readonly isRtl = signal<boolean>(false);
+  readonly globalMeetingTime = new FormControl('03:30 PM');
 
-  // Events & Results
-  readonly lastTimeSetEvent = signal<string>('07:00 AM');
-  readonly lastDateSetEvent = signal<string>('');
+  // ---------------------------------------------------------------------------
+  // Live Playground & Styling Theme Customizer
+  // ---------------------------------------------------------------------------
+  readonly themePresets: ThemePreset[] = [
+    {
+      id: 'violet',
+      name: 'Material Violet',
+      primaryLight: '#6750a4',
+      primaryDark: '#d0bcff',
+      containerLight: '#eaddff',
+      containerDark: '#4f378b',
+      chipColor: '#7c4dff',
+    },
+    {
+      id: 'rose',
+      name: 'Rose Quartz',
+      primaryLight: '#b32658',
+      primaryDark: '#f48fb1',
+      containerLight: '#ffd8e4',
+      containerDark: '#633b48',
+      chipColor: '#f48fb1',
+    },
+    {
+      id: 'azure',
+      name: 'Electric Azure',
+      primaryLight: '#0061a4',
+      primaryDark: '#9ecaff',
+      containerLight: '#d1e4ff',
+      containerDark: '#00497d',
+      chipColor: '#29b6f6',
+    },
+    {
+      id: 'emerald',
+      name: 'Emerald Green',
+      primaryLight: '#2e6c43',
+      primaryDark: '#8cd69b',
+      containerLight: '#b7f397',
+      containerDark: '#005324',
+      chipColor: '#66bb6a',
+    },
+    {
+      id: 'amber',
+      name: 'Sunset Amber',
+      primaryLight: '#8c5000',
+      primaryDark: '#ffb870',
+      containerLight: '#ffdcbe',
+      containerDark: '#6e3900',
+      chipColor: '#ffa726',
+    },
+  ];
 
-  // Embedded Dialog State
-  readonly embeddedTime = signal<TimeValue>({ hour: 7, minute: 0, period: 'AM' });
-  readonly embeddedFormat = signal<TimeFormat>('12h');
+  readonly activePreset = signal<ThemePreset>(this.themePresets[0]);
+  readonly customRadiusNumber = signal<number>(28);
+  readonly customRadius = computed(() => `${this.customRadiusNumber()}px`);
+  readonly playgroundFormat = signal<TimeFormat>('12h');
+  readonly playgroundOrientation = signal<TimePickerOrientation>('vertical');
+  readonly playgroundStep = signal<number>(1);
+  readonly embeddedTime = signal<TimeValue>({ hour: 9, minute: 41, period: 'AM' });
 
-  // Code Snippets for Copying
-  readonly snippetBasicHtml = `<div class="field-container">\n  <input [ngxMatTimepicker]="picker" [formControl]="timeControl" placeholder="Pick a time">\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n</div>\n<ngx-mat-timepicker #picker/>`;
-  readonly snippetBasicTs = `import { Component } from '@angular/core';\nimport { FormControl, ReactiveFormsModule } from '@angular/forms';\nimport { NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle } from 'ngx-mat-timepicker';\n\n@Component({\n  selector: 'basic-timepicker-example',\n  standalone: true,\n  imports: [ReactiveFormsModule, NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle],\n  templateUrl: './basic-timepicker.html',\n})\nexport class BasicTimepickerExample {\n  readonly timeControl = new FormControl('07:00 AM');\n}`;
-  readonly snippetBasicCss = `.field-container {\n  display: flex;\n  align-items: center;\n  max-width: 320px;\n  border: 1px solid #49454f;\n  border-radius: 8px;\n  background: #1d1b20;\n}`;
-  readonly snippetConnectingHtml = `<mat-form-field appearance="outline">\n  <mat-label>Pick a time</mat-label>\n  <input matInput [ngxMatTimepicker]="picker">\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n  <ngx-mat-timepicker #picker/>\n</mat-form-field>`;
-  readonly snippetFormsTs = `readonly timeControl = new FormControl('07:00 AM', [Validators.required]);\n\nonSave(): void {\n  if (this.timeControl.valid) {\n    console.log('Selected Time:', this.timeControl.value);\n  }\n}`;
-  readonly snippetSignalFormsHtml = `<mat-form-field appearance="outline">\n  <mat-label>Meeting time</mat-label>\n  <input matInput [formField]="bookingForm.meetingTime" [ngxMatTimepicker]="picker" placeholder="Pick a time" />\n  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker" />\n  <ngx-mat-timepicker #picker />\n</mat-form-field>\n\n@if (bookingForm.meetingTime().touched() && bookingForm.meetingTime().errors().length) {\n  <span class="error-msg">{{ bookingForm.meetingTime().errors()[0].message }}</span>\n}`;
-  readonly snippetSignalFormsTs = `import { Component, signal } from '@angular/core';\nimport { form, FormField, required } from '@angular/forms/signals';\nimport { MatFormFieldModule } from '@angular/material/form-field';\nimport { MatInputModule } from '@angular/material/input';\nimport { NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle } from 'ngx-mat-timepicker';\n\n@Component({\n  standalone: true,\n  imports: [FormField, MatFormFieldModule, MatInputModule, NgxMatTimepicker, NgxMatTimepickerInput, NgxMatTimepickerToggle],\n  templateUrl: './meeting-time.html',\n})\nexport class MeetingTimeComponent {\n  readonly model = signal({ meetingTime: '08:30 AM' });\n  readonly bookingForm = form(this.model, (s) => {\n    required(s.meetingTime, { message: 'Meeting time is required' });\n  });\n}`;
-  readonly snippetDateHtml = `<input [ngxMatTimepicker]="picker" [formControl]="dateControl" valueType="date">\n<ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>\n<ngx-mat-timepicker #picker (dateSet)="onDateChange($event)"/>`;
-  readonly snippetThemingScss = `@use 'ngx-mat-timepicker' as timepicker;\n\n// 1. Emit full Material 3 theme & overlay styles\n@include timepicker.theme();\n\n// 2. Optional: fine-grained token overrides\n@include timepicker.tokens((\n  container-bg: #1e1b24,\n  dial-pin: #d0bcff\n));`;
-  readonly snippetApiImport = `import {\n  NgxMatTimepicker,\n  NgxMatTimepickerInput,\n  NgxMatTimepickerToggle,\n  NgxMatTimepickerDialog,\n  NgxMatTimepickerIntl\n} from 'ngx-mat-timepicker';`;
+  // Code snippets for copy
+  readonly snippetBasicHtml = `<mat-form-field appearance="outline">
+  <mat-label>Meeting Time</mat-label>
+  <mat-icon matPrefix>schedule</mat-icon>
+  <input matInput [ngxMatTimepicker]="picker" [formControl]="timeControl" placeholder="hh:mm aa">
+  <ngx-mat-timepicker-toggle matIconSuffix [for]="picker"/>
+  <mat-hint>Click the clock icon or type time</mat-hint>
+</mat-form-field>
+<ngx-mat-timepicker #picker/>`;
+
+  readonly playgroundPrimaryColor = computed(() => {
+    return this.isDarkMode()
+      ? this.activePreset().primaryDark
+      : this.activePreset().primaryLight;
+  });
+
+  readonly playgroundContainerColor = computed(() => {
+    return this.isDarkMode()
+      ? this.activePreset().containerDark
+      : this.activePreset().containerLight;
+  });
+
+  readonly generatedScssSnippet = computed(() => {
+    const primary = this.playgroundPrimaryColor();
+    const container = this.playgroundContainerColor();
+    const radius = this.customRadius();
+
+    return `@use 'ngx-mat-timepicker' as timepicker;\n\n// Custom Material 3 Token Overrides\n@include timepicker.theme((\n  dial-pin: ${primary},\n  dial-hand: ${primary},\n  dial-handle-bg: ${primary},\n  time-box-selected-bg: ${container},\n  container-shape: ${radius}\n));`;
+  });
 
   constructor() {
-    // Default to dark mode matching material.angular.dev
-    document.body.classList.add('dark-mode');
-    this.setLocale('es-ES');
+    // Default to dark mode matching Angular Material docs
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('dark-mode');
+      document.documentElement.classList.add('dark-mode');
+    }
   }
 
+  // ---------------------------------------------------------------------------
+  // UI Actions & Helpers
+  // ---------------------------------------------------------------------------
   setTab(tab: DocTab): void {
     this.activeTab.set(tab);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   }
 
   toggleTheme(): void {
     const next = !this.isDarkMode();
     this.isDarkMode.set(next);
-    if (next) {
-      document.body.classList.add('dark-mode');
-    } else {
-      document.body.classList.remove('dark-mode');
+    if (typeof document !== 'undefined') {
+      if (next) {
+        document.body.classList.add('dark-mode');
+        document.documentElement.classList.add('dark-mode');
+      } else {
+        document.body.classList.remove('dark-mode');
+        document.documentElement.classList.remove('dark-mode');
+      }
     }
   }
 
   scrollToSection(sectionId: string): void {
     this.activeToc.set(sectionId);
-    const element = document.getElementById(sectionId);
-    if (element) {
-      const yOffset = -140;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: 'smooth' });
+    if (typeof document !== 'undefined' && typeof window !== 'undefined') {
+      const element = document.getElementById(sectionId);
+      if (element) {
+        const yOffset = -120;
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
     }
+  }
+
+  selectThemePreset(preset: ThemePreset): void {
+    this.activePreset.set(preset);
+  }
+
+  updateRadius(val: number): void {
+    this.customRadiusNumber.set(val);
+  }
+
+  setStep(step: number): void {
+    this.currentStep.set(step);
   }
 
   toggleCode(exampleId: string): void {
@@ -175,15 +316,23 @@ export class App {
     return this.activeCodeTab()[exampleId] || 'html';
   }
 
+  copyNpmInstall(): void {
+    this.copyToClipboard('npm i ngx-mat-timepicker', 'Install command');
+    this.copiedNpm.set(true);
+    setTimeout(() => this.copiedNpm.set(false), 2500);
+  }
+
   copyToClipboard(text: string, label: string = 'Code'): void {
-    navigator.clipboard.writeText(text).then(() => {
-      this.copyFeedback.set(`${label} copied!`);
-      setTimeout(() => {
-        if (this.copyFeedback() === `${label} copied!`) {
-          this.copyFeedback.set(null);
-        }
-      }, 2500);
-    });
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        this.copyFeedback.set(`${label} copied to clipboard!`);
+        setTimeout(() => {
+          if (this.copyFeedback() === `${label} copied to clipboard!`) {
+            this.copyFeedback.set(null);
+          }
+        }, 2500);
+      });
+    }
   }
 
   setLocale(loc: string): void {
@@ -226,6 +375,18 @@ export class App {
         this.isRtl.set(false);
         break;
 
+      case 'ja-JP':
+        this.intl.selectTimeLabel = '時間を選択';
+        this.intl.enterTimeLabel = '時間を入力';
+        this.intl.hourLabel = '時';
+        this.intl.minuteLabel = '分';
+        this.intl.amLabel = '午前';
+        this.intl.pmLabel = '午後';
+        this.intl.cancelLabel = 'キャンセル';
+        this.intl.okLabel = '決定';
+        this.isRtl.set(false);
+        break;
+
       case 'ar-SA':
         this.intl.selectTimeLabel = 'اختر الوقت';
         this.intl.enterTimeLabel = 'أدخل الوقت';
@@ -254,20 +415,13 @@ export class App {
     this.intl.changes.next();
   }
 
-  onTimeSet(val: TimeValue): void {
-    const periodStr = val.period ? ` ${val.period}` : '';
-    const formatted = `${val.hour.toString().padStart(2, '0')}:${val.minute
-      .toString()
-      .padStart(2, '0')}${periodStr}`;
-    this.lastTimeSetEvent.set(formatted);
-  }
-
-  onDateSet(d: Date): void {
-    this.lastDateSetEvent.set(d.toString());
-  }
-
-  onEmbeddedTimeSet(val: TimeValue): void {
+  onEmbeddedTimeChange(val: TimeValue): void {
     this.embeddedTime.set(val);
+  }
+
+  formatDateObject(date: Date | null): string {
+    if (!date) return 'No date selected';
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' (' + date.toISOString() + ')';
   }
 }
 
