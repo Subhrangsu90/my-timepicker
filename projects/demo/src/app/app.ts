@@ -28,7 +28,7 @@ import {
   TimeFormat,
   TimePickerOrientation,
   TimeValue,
-} from 'ngx-material-timepicker';
+} from 'ngx-m3-timepicker';
 
 export type DocTab = 'overview' | 'api' | 'styling' | 'examples';
 
@@ -218,7 +218,7 @@ export class App {
 
   readonly snippetThemingScss = `@use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use 'ngx-material-timepicker' as timepicker;
+@use 'ngx-m3-timepicker' as timepicker;
 
 // 1. Define Angular Material 3 Themes (Light & Dark)
 $light-theme: mat.define-theme((
@@ -279,7 +279,7 @@ body.dark-mode {
     const container = this.playgroundContainerColor();
     const radius = this.customRadius();
 
-    return `@use 'ngx-material-timepicker' as timepicker;\n\n// Custom Material 3 Token Overrides\n@include timepicker.theme((\n  dial-pin: ${primary},\n  dial-hand: ${primary},\n  dial-handle-bg: ${primary},\n  time-box-selected-bg: ${container},\n  container-shape: ${radius}\n));`;
+    return `@use 'ngx-m3-timepicker' as timepicker;\n\n// Custom Material 3 Token Overrides\n@include timepicker.theme((\n  dial-pin: ${primary},\n  dial-hand: ${primary},\n  dial-handle-bg: ${primary},\n  time-box-selected-bg: ${container},\n  container-shape: ${radius}\n));`;
   });
 
   constructor() {
@@ -363,7 +363,7 @@ body.dark-mode {
   }
 
   copyNpmInstall(): void {
-    this.copyToClipboard('npm i ngx-material-timepicker', 'Install command');
+    this.copyToClipboard('npm i ngx-m3-timepicker', 'Install command');
     this.copiedNpm.set(true);
     setTimeout(() => this.copiedNpm.set(false), 2500);
   }

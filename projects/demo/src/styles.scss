@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use 'ngx-material-timepicker' as timepicker;
+@use 'ngx-m3-timepicker' as timepicker;
 
 // Define Angular Material 3 Themes
 $light-theme: mat.define-theme((

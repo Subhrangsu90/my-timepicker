@@ -1,4 +1,4 @@
-# Material Design 3 Time Picker (`ngx-mat-timepicker`) — Full Documentation
+# Material Design 3 Time Picker (`ngx-m3-timepicker`) — Full Documentation
 
 An enterprise-grade, accessible **Material Design 3 (M3) Time Picker** for Angular, engineered to match the official specifications from [Material 3 Time Pickers](https://m3.material.io/components/time-pickers/specs).
 
@@ -36,7 +36,7 @@ The `ngx-mat-timepicker` library provides a modern Angular Material 3 implementa
 - **Angular Signal Forms Support**: First-class support for `@angular/forms/signals` with `[formField]`, automatically dispatching native `input` and `change` events upon selection to keep signals in sync.
 - **Signal-Powered Reactivity**: Built with Angular Signals (`signal()`, `computed()`, `input()`, `output()`) and modern control flow (`@if`, `@for`, `@switch`).
 - **Angular CDK Powered**: Utilizes `@angular/cdk/overlay` for modal backdrop and screen positioning, `@angular/cdk/a11y` for focus trapping (`cdkTrapFocus`) and live screen reader updates (`LiveAnnouncer`).
-- **Professional Sass Theming**: Clean Angular Material-style Sass module architecture (`@use 'ngx-mat-timepicker' as timepicker;`).
+- **Professional Sass Theming**: Clean Angular Material-style Sass module architecture (`@use 'ngx-m3-timepicker' as timepicker;`).
 
 ---
 
@@ -44,7 +44,7 @@ The `ngx-mat-timepicker` library provides a modern Angular Material 3 implementa
 
 ### 1. Install Dependencies
 ```bash
-npm install ngx-material-timepicker @angular/cdk
+npm install ngx-m3-timepicker @angular/cdk
 ```
 
 ### 2. Include CDK Overlay & Timepicker Theme Styles
@@ -52,7 +52,7 @@ In your global stylesheet (`src/styles.scss`):
 ```scss
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use 'ngx-material-timepicker' as timepicker;
+@use 'ngx-m3-timepicker' as timepicker;
 
 // 1. Define Angular Material 3 Themes (Light & Dark)
 $light-theme: mat.define-theme((
@@ -147,7 +147,7 @@ import {
   NgxMatTimepicker,
   NgxMatTimepickerInput,
   NgxMatTimepickerToggle,
-} from 'ngx-mat-timepicker';
+} from 'ngx-m3-timepicker';
 
 @Component({
   selector: 'app-booking',
@@ -195,7 +195,7 @@ import {
   NgxMatTimepicker,
   NgxMatTimepickerInput,
   NgxMatTimepickerToggle,
-} from 'ngx-mat-timepicker';
+} from 'ngx-m3-timepicker';
 
 @Component({
   standalone: true,
@@ -465,7 +465,7 @@ In your `styles.scss`:
 ```scss
 @use '@angular/material' as mat;
 @use '@angular/cdk/overlay-prebuilt.css';
-@use 'ngx-material-timepicker' as timepicker;
+@use 'ngx-m3-timepicker' as timepicker;
 
 // 1. Define Angular Material 3 Themes (Light & Dark)
 $light-theme: mat.define-theme((
@@ -574,7 +574,7 @@ import {
   NgxMatTimepicker,
   NgxMatTimepickerInput,
   NgxMatTimepickerToggle,
-} from 'ngx-mat-timepicker';
+} from 'ngx-m3-timepicker';
 
 @Component({
   selector: 'app-shift-picker',

@@ -1,5 +1,5 @@
 {
-  "name": "ngx-material-timepicker",
+  "name": "ngx-m3-timepicker",
   "version": "22.0.0",
   "description": "Material Design 3 (M3) Time Picker for Angular applications with clock dial and text input modes.",
   "keywords": [
@@ -10,6 +10,7 @@
     "timepicker",
     "time-picker",
     "ngx-material",
+    "ngx-m3-timepicker",
     "ngx-mat-timepicker",
     "angular-material",
     "Angular 9+",
@@ -23,7 +24,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Subhrangsu90/my-timepicker.git",
+    "url": "git+https://github.com/Subhrangsu90/my-timepicker.git",
     "directory": "projects/ngx-mat-timepicker"
   },
   "bugs": {
