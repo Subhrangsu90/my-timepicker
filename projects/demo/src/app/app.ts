@@ -28,7 +28,7 @@ import {
   TimeFormat,
   TimePickerOrientation,
   TimeValue,
-} from 'ngx-mat-timepicker';
+} from '@ngx-material/timepicker';
 
 export type DocTab = 'overview' | 'api' | 'styling' | 'examples';
 
@@ -216,6 +216,52 @@ export class App {
 </mat-form-field>
 <ngx-mat-timepicker #picker/>`;
 
+  readonly snippetThemingScss = `@use '@angular/material' as mat;
+@use '@angular/cdk/overlay-prebuilt.css';
+@use '@ngx-material/timepicker' as timepicker;
+
+// 1. Define Angular Material 3 Themes (Light & Dark)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+  typography: (
+    plain-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    brand-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+));
+
+// 2. Base setup
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+// 3. Apply themes & Timepicker styles
+html {
+  @include mat.all-component-themes($light-theme);
+  @include timepicker.theme();
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light dark;
+}
+
+html.dark-mode,
+body.dark-mode {
+  @include mat.all-component-colors($dark-theme);
+}`;
+
   readonly playgroundPrimaryColor = computed(() => {
     return this.isDarkMode()
       ? this.activePreset().primaryDark
@@ -233,7 +279,7 @@ export class App {
     const container = this.playgroundContainerColor();
     const radius = this.customRadius();
 
-    return `@use 'ngx-mat-timepicker' as timepicker;\n\n// Custom Material 3 Token Overrides\n@include timepicker.theme((\n  dial-pin: ${primary},\n  dial-hand: ${primary},\n  dial-handle-bg: ${primary},\n  time-box-selected-bg: ${container},\n  container-shape: ${radius}\n));`;
+    return `@use '@ngx-material/timepicker' as timepicker;\n\n// Custom Material 3 Token Overrides\n@include timepicker.theme((\n  dial-pin: ${primary},\n  dial-hand: ${primary},\n  dial-handle-bg: ${primary},\n  time-box-selected-bg: ${container},\n  container-shape: ${radius}\n));`;
   });
 
   constructor() {
@@ -317,7 +363,7 @@ export class App {
   }
 
   copyNpmInstall(): void {
-    this.copyToClipboard('npm i ngx-mat-timepicker', 'Install command');
+    this.copyToClipboard('npm i @ngx-material/timepicker', 'Install command');
     this.copiedNpm.set(true);
     setTimeout(() => this.copiedNpm.set(false), 2500);
   }

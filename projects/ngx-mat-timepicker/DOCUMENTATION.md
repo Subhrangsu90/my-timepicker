@@ -51,14 +51,51 @@ npm install ngx-mat-timepicker @angular/cdk
 In your global stylesheet (`src/styles.scss`):
 ```scss
 @use '@angular/material' as mat;
-@use 'ngx-mat-timepicker' as timepicker;
+@use '@angular/cdk/overlay-prebuilt.css';
+@use '@ngx-material/timepicker' as timepicker;
 
-// Include default Material 3 timepicker styles
-@include timepicker.theme();
+// 1. Define Angular Material 3 Themes (Light & Dark)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+  typography: (
+    plain-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    brand-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+));
+
+// 2. Base setup
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+// 3. Apply themes & Timepicker styles
+html {
+  @include mat.all-component-themes($light-theme);
+  @include timepicker.theme();
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light dark;
+}
+
+html.dark-mode,
+body.dark-mode {
+  @include mat.all-component-colors($dark-theme);
+}
 ```
-
-> [!NOTE]
-> If you are not using `@angular/material` in your project, ensure `@angular/cdk/overlay-prebuilt.css` is imported in `styles.scss` so overlay backdrop and panel styles render properly.
 
 ### 3. Provide Async Animations
 In your `app.config.ts`:
@@ -427,12 +464,52 @@ In your `styles.scss`:
 
 ```scss
 @use '@angular/material' as mat;
-@use 'ngx-mat-timepicker' as timepicker;
+@use '@angular/cdk/overlay-prebuilt.css';
+@use '@ngx-material/timepicker' as timepicker;
 
-// 1. Emit standard Material 3 theme & overlay styles
-@include timepicker.theme();
+// 1. Define Angular Material 3 Themes (Light & Dark)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+  typography: (
+    plain-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    brand-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
 
-// 2. Optional: Custom palette token overrides
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+));
+
+// 2. Base setup
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+// 3. Apply themes & Timepicker styles
+html {
+  @include mat.all-component-themes($light-theme);
+  @include timepicker.theme();
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light dark;
+}
+
+html.dark-mode,
+body.dark-mode {
+  @include mat.all-component-colors($dark-theme);
+}
+
+// 4. Optional: Custom palette token overrides
 :root {
   @include timepicker.tokens((
     dial-hand: #f48fb1,
@@ -440,13 +517,6 @@ In your `styles.scss`:
     time-box-selected-bg: #633b48,
     action-color: #f48fb1,
     container-shape: 20px
-  ));
-}
-
-.dark-theme, [data-theme='dark'] {
-  @include timepicker.tokens((
-    container-bg: #1e1b24,
-    dial-bg: #2b2832
   ));
 }
 ```

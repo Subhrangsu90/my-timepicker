@@ -1,7 +1,8 @@
-# Angular Material Timepicker Monorepo
+# @ngx-material/timepicker
 
 Enterprise-grade **Material Design 3 (M3) Time Picker** for Angular 18+, featuring clock dials, numeric inputs, Angular Signal Forms support, and professional Sass theming.
 
+[![npm version](https://img.shields.io/npm/v/@ngx-material/timepicker.svg)](https://www.npmjs.com/package/@ngx-material/timepicker)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ---
@@ -11,10 +12,10 @@ Enterprise-grade **Material Design 3 (M3) Time Picker** for Angular 18+, featuri
 ```
 my-timepicker/
 ├── projects/
-│   ├── ngx-mat-timepicker/    # The core Angular Material 3 Timepicker library
+│   ├── ngx-mat-timepicker/    # The core @ngx-material/timepicker library
 │   │   ├── src/lib/           # Directives, components, services, and tokens
 │   │   ├── _theming.scss      # Material 3 Sass mixins & tokens
-│   │   └── package.json       # Library package definition
+│   │   └── package.json       # Library package definition (@ngx-material/timepicker)
 │   └── demo/                  # Interactive documentation & live showcase app
 ├── angular.json               # Angular workspace configuration
 └── package.json               # Monorepo scripts and workspace dependencies
@@ -27,17 +28,59 @@ my-timepicker/
 ### 1. Installation
 
 ```bash
-npm install ngx-mat-timepicker @angular/cdk
+npm install @ngx-material/timepicker @angular/cdk
 ```
 
 ### 2. Global Sass Theming (`styles.scss`)
 
+In your global `styles.scss`, configure your Angular Material 3 themes and include the `@ngx-material/timepicker` theme:
+
 ```scss
 @use '@angular/material' as mat;
-@use 'ngx-mat-timepicker' as timepicker;
+@use '@angular/cdk/overlay-prebuilt.css';
+@use '@ngx-material/timepicker' as timepicker;
 
-// Include default Material 3 timepicker styles
-@include timepicker.theme();
+// 1. Define Angular Material 3 Themes (Light & Dark)
+$light-theme: mat.define-theme((
+  color: (
+    theme-type: light,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+  typography: (
+    plain-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+    brand-family: 'Roboto, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+  ),
+  density: (
+    scale: 0,
+  ),
+));
+
+$dark-theme: mat.define-theme((
+  color: (
+    theme-type: dark,
+    primary: mat.$violet-palette,
+    tertiary: mat.$rose-palette,
+  ),
+));
+
+// 2. Base setup
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+// 3. Apply themes & Timepicker styles
+html {
+  @include mat.all-component-themes($light-theme);
+  @include timepicker.theme();
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color-scheme: light dark;
+}
+
+html.dark-mode,
+body.dark-mode {
+  @include mat.all-component-colors($dark-theme);
+}
 ```
 
 ### 3. Usage with Angular Signal Forms (`@angular/forms/signals`)
@@ -65,7 +108,7 @@ import {
   NgxMatTimepicker,
   NgxMatTimepickerInput,
   NgxMatTimepickerToggle,
-} from 'ngx-mat-timepicker';
+} from '@ngx-material/timepicker';
 
 @Component({
   standalone: true,

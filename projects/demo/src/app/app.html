@@ -9,9 +9,9 @@
         </svg>
       </div>
       <div class="nav-title-block">
-        <span class="nav-project-title">ngx-mat-timepicker</span>
+        <span class="nav-project-title">&#64;ngx-material/timepicker</span>
         <span class="m3-badge">Material 3</span>
-        <span class="nav-version">v22.2.0</span>
+        <span class="nav-version">v22.0.0</span>
       </div>
     </div>
 
@@ -23,7 +23,7 @@
         [matTooltip]="copiedNpm() ? 'Copied to clipboard!' : 'Click to copy install command'"
       >
         <span class="material-symbols-outlined icon-sm">terminal</span>
-        <span class="code-text">npm i ngx-mat-timepicker</span>
+        <span class="code-text">npm i &#64;ngx-material/timepicker</span>
         <span class="material-symbols-outlined icon-sm copy-status-icon" [class.copied]="copiedNpm()">
           {{ copiedNpm() ? 'check' : 'content_copy' }}
         </span>
@@ -126,8 +126,8 @@
               </div>
             </div>
             <div class="banner-code-row">
-              <code class="banner-code">npm i ngx-mat-timepicker</code>
-              <button class="banner-copy-btn" (click)="copyToClipboard('npm i ngx-mat-timepicker', 'Install command')">
+              <code class="banner-code">npm i &#64;ngx-material/timepicker</code>
+              <button class="banner-copy-btn" (click)="copyToClipboard('npm i @ngx-material/timepicker', 'Install command')">
                 <span class="material-symbols-outlined icon-sm">content_copy</span> Copy
               </button>
             </div>
@@ -856,6 +856,28 @@ export class BasicExample &#123;
               <pre><code class="language-scss">{{ generatedScssSnippet() }}</code></pre>
             </div>
           </div>
+
+          <!-- Global Sass Theming Guide -->
+          <section class="api-card" id="global-theming" style="margin-top: 32px;">
+            <div class="api-header">
+              <span class="api-kind">Sass Setup</span>
+              <h3 class="api-title"><code>Global Material 3 Setup (styles.scss)</code></h3>
+            </div>
+            <p class="api-desc">
+              Define your light and dark Material 3 themes using Angular Material's official <code class="inline-code">mat.define-theme()</code> API.
+              Include <code class="inline-code">&#64;include timepicker.theme()</code> inside your <code class="inline-code">html</code> selector to automatically inherit the design tokens.
+            </p>
+
+            <div class="code-box">
+              <div class="code-box-header">
+                <span class="code-lang">SCSS (src/styles.scss)</span>
+                <button class="code-action-btn" (click)="copyToClipboard(snippetThemingScss, 'Theming SCSS')">
+                  <span class="material-symbols-outlined icon-sm">content_copy</span> Copy Full Setup
+                </button>
+              </div>
+              <pre><code class="language-scss">{{ snippetThemingScss }}</code></pre>
+            </div>
+          </section>
         </article>
 
         <!-- Right Sidebar -->
@@ -864,7 +886,7 @@ export class BasicExample &#123;
             <h4 class="toc-title">STYLING TOPICS</h4>
             <ul class="toc-list">
               <li><a class="toc-link" (click)="scrollToSection('live-customizer')">Interactive Theme Customizer</a></li>
-              <li><a class="toc-link" (click)="scrollToSection('tokens')">Material 3 Tokens API</a></li>
+              <li><a class="toc-link" (click)="scrollToSection('global-theming')">Global Material 3 Setup</a></li>
             </ul>
           </div>
         </aside>
@@ -881,7 +903,7 @@ export class BasicExample &#123;
             <h2 class="doc-heading" style="margin-top: 0;">API Reference</h2>
             <p class="lead-text">
               Complete reference documentation for directives, components, services, and tokens exported by
-              <code class="inline-code">ngx-mat-timepicker</code>.
+              <code class="inline-code">&#64;ngx-material/timepicker</code>.
             </p>
           </div>
 
@@ -915,12 +937,12 @@ export class BasicExample &#123;
                   </tr>
                   <tr>
                     <td><code>orientation</code></td>
-                    <td><code>'portrait' | 'landscape'</code></td>
-                    <td><code>'portrait'</code></td>
-                    <td>Layout orientation of the dialog (stacked vs side-by-side).</td>
+                    <td><code>'auto' | 'vertical' | 'horizontal'</code></td>
+                    <td><code>'auto'</code></td>
+                    <td>Layout orientation of the dialog (portrait, landscape, or auto-detecting).</td>
                   </tr>
                   <tr>
-                    <td><code>step</code></td>
+                    <td><code>stepMinute</code></td>
                     <td><code>number</code></td>
                     <td><code>1</code></td>
                     <td>Minute increment interval (e.g. 5, 10, 15, 30).</td>
@@ -1143,12 +1165,12 @@ export class BasicExample &#123;
   <footer class="doc-footer">
     <div class="footer-inner">
       <div class="footer-left">
-        <span class="footer-brand">ngx-mat-timepicker</span>
+        <span class="footer-brand">&#64;ngx-material/timepicker</span>
         <span class="footer-copy">MIT Licensed &bull; Compatible with Angular Material 3, Angular 18/19/20/22</span>
       </div>
       <div class="footer-links">
         <a href="https://github.com/Subhrangsu90/my-timepicker" target="_blank" rel="noopener">GitHub</a>
-        <a href="https://www.npmjs.com/package/ngx-mat-timepicker" target="_blank" rel="noopener">npm Package</a>
+        <a href="https://www.npmjs.com/package/@ngx-material/timepicker" target="_blank" rel="noopener">npm Package</a>
         <a href="https://material.angular.io" target="_blank" rel="noopener">Angular Material Docs</a>
       </div>
     </div>
