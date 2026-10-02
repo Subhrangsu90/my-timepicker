@@ -5,8 +5,8 @@
     "ng": "ng",
     "start": "ng serve demo",
     "build": "ng build ngx-mat-timepicker",
-    "build:demo": "ng build demo",
-    "publish:lib": "npm run build && cd dist/ngx-material-timepicker && npm publish",
+    "build:demo": "npm run build && ng build demo",
+    "publish:lib": "npm run build && cd dist/ngx-m3-timepicker && npm publish --access public",
     "watch": "ng build ngx-mat-timepicker --watch --configuration development",
     "test": "ng test ngx-mat-timepicker"
   },

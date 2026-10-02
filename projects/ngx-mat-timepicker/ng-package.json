@@ -1,6 +1,6 @@
 {
   "$schema": "../../node_modules/ng-packagr/ng-package.schema.json",
-  "dest": "../../dist/ngx-material-timepicker",
+  "dest": "../../dist/ngx-m3-timepicker",
   "assets": [
     "_index.scss",
     "_theming.scss",
