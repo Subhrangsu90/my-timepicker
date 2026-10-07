@@ -175,4 +175,4 @@ For the full API reference, styling options, and customization guide, see [proje
 
 ## 📄 License
 
-MIT © [Subhrangsu Chowdhury](https://github.com/Subhrangsu90)
+MIT © [Subhrangsu Bera](https://github.com/Subhrangsu90)
